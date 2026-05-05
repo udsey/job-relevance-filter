@@ -1,8 +1,5 @@
 # Project Definition: Automated Job Filtering & Field Extraction
 
-## Project Name (Git Repo)
-`job-relevance-filter`
-
 ## Reference
 [How to Scrape LinkedIn Job Listings in 2026 (Python, Public API, No Login Required)](https://dev.to/agenthustler/how-to-scrape-linkedin-job-listings-in-2026-python-public-api-no-login-required-5bin#comments)
 
