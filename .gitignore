@@ -1,0 +1,10 @@
+.*
+!.gitignore
+
+__pycache__
+
+project-definition.md
+user_profile.yaml
+config.yaml
+
+
