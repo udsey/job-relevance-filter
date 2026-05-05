@@ -9,6 +9,9 @@ from pydantic import BaseModel
 import logging
 from scr.models import LLMJobMatchModel, LLMUserProfileModel, LinkedinJobModel
 from scr.setup import config
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
