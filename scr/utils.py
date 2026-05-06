@@ -129,5 +129,3 @@ def match_jobs() -> None:
     jobs = pd.concat([jobs, results], axis=1)
     jobs.to_csv(filepath, index=False)
     logger.info(f"Done! File {filepath} updated with matching results.")
-    
-

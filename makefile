@@ -6,6 +6,7 @@ help:
 	@echo "  find-new        - Find new jobs"
 	@echo "  create-profile  - Create user profile"
 	@echo "  match-jobs      - Match jobs to profile"
+	@echo "  find-and-match  - Find new jobs and match to profile"
 
 set-criteria:
 	@uv run python -c "from scr.utils import create_search_criteria; create_search_criteria()"
@@ -18,3 +19,6 @@ create-profile:
 
 match-jobs:
 	@uv run python -c "from scr.utils import match_jobs; match_jobs()"
+
+
+find-and-match: find-new match-jobs
