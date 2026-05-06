@@ -38,16 +38,6 @@ def get_llm() -> BaseChatModel:
         logger.error(f"Unknown model type: '{model_type}'. Expected 'groq' or 'local'.")
         raise
 
-
-def get_structured_llm(prompt_text: str, output_model: BaseModel) -> Runnable:
-    """Return structured llm."""
-    
-
-
-    structured_llm = prompt | llm.with_structured_output(output_model)
-
-    return structured_llm
-
 llm = get_llm()
 
 match_job_prompt = ChatPromptTemplate.from_messages([
