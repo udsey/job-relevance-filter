@@ -1,7 +1,8 @@
-.PHONY: help set-criteria find-new create-profile match-jobs
+.PHONY: help set-criteria find-new create-profile match-jobs dashboard
 
 help:
 	@echo "Available commands:"
+	@echo "  dashboard    	  - Opens dashboard"
 	@echo "  set-criteria    - Create search criteria"
 	@echo "  find-new        - Find new jobs"
 	@echo "  create-profile  - Create user profile"
@@ -20,5 +21,8 @@ create-profile:
 match-jobs:
 	@uv run python -c "from scr.utils import match_jobs; match_jobs()"
 
-
 find-and-match: find-new match-jobs
+
+
+dashboard:
+	@uv run python -c 'from dashboard.app import app; app.run(debug=True, host="0.0.0.0")'
