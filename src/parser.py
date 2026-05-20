@@ -1,14 +1,14 @@
-import pdfplumber
+import pandas as pd
 from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseChatModel
-from langchain_core.runnables import Runnable
 
-from pydantic import BaseModel
 import logging
-from scr.models import LLMJobMatchModel, LLMUserProfileModel, LinkedinJobModel
-from scr.setup import config
+
+from tqdm import tqdm
+from src.models import LLMJobMatchModel, LLMUserProfileModel, LinkedinJobModel
+from src.setup import config
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,19 +24,21 @@ def get_llm() -> BaseChatModel:
 
     if model_type == "groq":
         return ChatGroq(
-            model=config.llm_config.model_name, 
+            model=config.llm_config.model_name,
             temperature=config.llm_config.temperature
         )
-    
+
     elif model_type == "local":
         return ChatOllama(
             model=config.llm_config.model_name,
             temperature=config.llm_config.temperature
         )
-    
+
     else:
-        logger.error(f"Unknown model type: '{model_type}'. Expected 'groq' or 'local'.")
+        logger.error(
+            f"Unknown model type: '{model_type}'. Expected 'groq' or 'local'.")
         raise
+
 
 llm = get_llm()
 
@@ -52,12 +54,15 @@ extract_user_profile_prompt = ChatPromptTemplate.from_messages([
     ])
 
 
-job_matcher_agent = match_job_prompt | llm.with_structured_output(LLMJobMatchModel)
+job_matcher_agent = (
+    match_job_prompt | llm.with_structured_output(LLMJobMatchModel))
 
-user_profile_extraction_agent = extract_user_profile_prompt | llm.with_structured_output(LLMUserProfileModel)
+user_profile_extraction_agent = (
+    extract_user_profile_prompt |
+    llm.with_structured_output(LLMUserProfileModel))
 
 
-def match_job(job: LinkedinJobModel, 
+def match_job(job: LinkedinJobModel,
               user_profile: LLMUserProfileModel) -> LLMJobMatchModel:
     return job_matcher_agent.invoke({
         "job": job.model_dump(),
@@ -65,12 +70,18 @@ def match_job(job: LinkedinJobModel,
     })
 
 
-def extract_user_profile(pdf_path: str) -> LLMUserProfileModel:
-    with pdfplumber.open(pdf_path) as pdf:
-        text = '\n'.join(page.extract_text() or '' for page in pdf.pages)
-    return user_profile_extraction_agent.invoke({"content": text})
-    
+def extract_user_profile(content: str) -> LLMUserProfileModel:
+    return user_profile_extraction_agent.invoke({"content": content})
 
 
+def match_jobs(
+        profile: LLMUserProfileModel, jobs: pd.DataFrame) -> pd.DataFrame:
+    results = []
+    for _, job in tqdm(jobs.iterrows(),
+                       desc="Matching jobs.",
+                       total=jobs.shape[0]):
+        job = LinkedinJobModel(**job)
+        result = match_job(user_profile=profile, job=job)
+        results.append(result.model_dump())
 
-
+    return pd.DataFrame(results)

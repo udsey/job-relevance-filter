@@ -1,0 +1,973 @@
+search_parameters:
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '100205264'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '100205264'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '100205264'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '104305776'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '104305776'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '104305776'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 2
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 3
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 4
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 5
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: 6
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '106417171'
+  job_type: F
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '106417171'
+  job_type: P
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
+- experience_level: null
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 1
+- experience_level: null
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 2
+- experience_level: null
+  geo_id: '106417171'
+  job_type: C
+  keywords: AI Engineer
+  time_posted_interval: r86400
+  work_type: 3
