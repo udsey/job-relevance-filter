@@ -137,7 +137,7 @@ def add_job_details(jobs: LinkedinJobModel) -> tuple:
             description_div = soup.find("div",
                                         class_="description__text--rich")
             job.description = (
-                description_div.get_text(strip=True) if description_div
+                description_div.get_text(strip=False) if description_div
                 else None)
 
             seniority = soup.find(

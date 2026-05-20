@@ -22,6 +22,8 @@ job_generator = None
 def get_jobs() -> pd.DataFrame:
     global _jobs_df
     if _jobs_df is None:
+        if not os.path.exists(filepath):
+            return None
         _jobs_df = pd.read_csv(filepath)
         for col in ["missing_requirements", "matching_skills"]:
             _jobs_df[col] = _jobs_df[col].apply(
@@ -32,6 +34,8 @@ def get_jobs() -> pd.DataFrame:
 
 def get_filtered_jobs() -> pd.DataFrame:
     df = get_jobs()
+    if not df:
+        return None
     return df.loc[
         (df.relevance_score >= config.relevance_threshold) &
         (~df.status.isin({"apply", "remove"}))
@@ -57,6 +61,8 @@ def get_job_generator(jobs) -> Generator:
 def layout() -> html.Div:
     global job_generator
     jobs = get_filtered_jobs()
+    if not jobs:
+        return get_no_jobs_card()
     job_generator = get_job_generator(jobs)
     first = next(job_generator)
     return html.Div([
@@ -136,6 +142,13 @@ def get_job_card(row: dict) -> dbc.Card:
         ])
     ], className="mb-3 job-card")
 
+def get_no_jobs_card() -> dbc.Card:
+    return dbc.Card([
+        dbc.CardBody(
+            html.Div("No more jobs!")
+        )
+    ], className="no-jobs-card")
+
 
 @callback(
     Output("job-card-container", "children", allow_duplicate=True),
@@ -152,7 +165,7 @@ def on_skip(n_clicks, job_id) -> Any:
         next_row = next(job_generator)
         return get_job_card(next_row), next_row.job_id
     except StopIteration:
-        return html.Div("No more jobs!"), no_update
+        return get_no_jobs_card(), no_update
 
 
 @callback(
@@ -171,7 +184,7 @@ def on_remove(n_clicks, job_id) -> Any:
         next_row = next(job_generator)
         return get_job_card(next_row), next_row.job_id
     except StopIteration:
-        return html.Div("No more jobs!"), no_update
+        return get_no_jobs_card(), no_update
 
 
 @callback(
@@ -189,4 +202,4 @@ def on_apply(n_clicks, job_id) -> Any:
         next_row = next(job_generator)
         return get_job_card(next_row), next_row.job_id
     except StopIteration:
-        return html.Div("No more jobs!"), no_update
+        return get_no_jobs_card(), no_update

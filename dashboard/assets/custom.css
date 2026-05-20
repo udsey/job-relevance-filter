@@ -168,3 +168,9 @@ h3 {
   transition: opacity 0.2s;
   border-radius: 0 !important;
 }
+
+
+.no-jobs-card {
+  align-items: center;
+  border-color: var(--color-primary-solid) !important;
+}
