@@ -1,38 +1,21 @@
-import base64
+import ast
 from collections import defaultdict
 from datetime import date
-import io
 import logging
 from itertools import product
 import os
-import pdfplumber
+from typing import Generator
+import pandas as pd
 from pydantic import BaseModel
 import questionary
 import requests
 import yaml
-from src.models import (Config, LLMUserProfileModel, ParamsConfig,
+from src.models import (LLMUserProfileModel, ParamsConfig,
                         SearchCriteria)
-from src.parser import extract_user_profile
-from src.setup import CONFIG_DIR
+from src.setup import CONFIG_DIR, DATA_DIR, config
 
 
 logger = logging.getLogger(__name__)
-
-
-def load_config() -> dict:
-    """Load config fime from name."""
-    filepath = os.path.join(CONFIG_DIR, 'config.yaml')
-    if not os.path.exists(filepath):
-        return Config()
-    with open(filepath, "r") as f:
-        config = yaml.safe_load(f)
-        return Config(**config)
-
-
-def save_config(config: BaseModel):
-    """Save config file."""
-    with open(os.path.join(CONFIG_DIR, 'config.yaml'), 'w') as f:
-        yaml.dump(config.model_dump(), f, default_flow_style=False)
 
 
 def load_yaml(filepath: str, model: BaseModel | None = None):
@@ -88,30 +71,6 @@ def resolve_geo_id(location: str) -> str | None:
             return hits[0].get("id")
     logger.warning(f"Could not resolve geoId for: {location}")
     return None
-
-
-def create_user_profile(
-        content: str = None,
-        filepath: str = None) -> LLMUserProfileModel:
-    if not content and not filepath:
-        logger.error("Provide content or filepath")
-    elif content:
-        _, content_string = content.split(",")
-        decoded = base64.b64decode(content_string)
-        with pdfplumber.open(io.BytesIO(decoded)) as pdf:
-            data = "\n".join(page.extract_text() for page in pdf.pages)
-    else:
-        if not os.path.exists(filepath):
-            logger.error(
-                "File was not found at {filepath}. Please provide valid path")
-            return
-        with pdfplumber.open(filepath) as pdf:
-            data = '\n'.join(page.extract_text() or '' for page in pdf.pages)
-
-    user_profile = extract_user_profile(data)
-    filepath = os.path.join(CONFIG_DIR, "profile.yaml")
-    save_to_yaml(user_profile, filepath)
-    return user_profile
 
 
 def _resolve_location(loc: str, locations_dict: dict) -> int | None:

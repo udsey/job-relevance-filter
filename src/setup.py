@@ -1,7 +1,26 @@
 import logging
 import os
 
-from src.utils import load_config
+from pydantic import BaseModel
+import yaml
+from src.models import Config
+
+
+def load_config() -> dict:
+    """Load config fime from name."""
+    filepath = os.path.join(CONFIG_DIR, 'config.yaml')
+    if not os.path.exists(filepath):
+        return Config()
+    with open(filepath, "r") as f:
+        config = yaml.safe_load(f)
+        return Config(**config)
+
+
+def save_config(config: BaseModel):
+    """Save config file."""
+    with open(os.path.join(CONFIG_DIR, 'config.yaml'), 'w') as f:
+        yaml.dump(config.model_dump(), f, default_flow_style=False)
+
 
 logging.basicConfig(
     level=logging.INFO,

@@ -5,10 +5,10 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html, no_update, dcc
 import json
-from src.utils import (create_user_profile, save_to_config,
+from src.utils import (save_to_config,
                        load_existing_criteria, load_existing_profile,
                        save_profile)
-
+from src.parser import create_user_profile
 
 dash.register_page(__name__, path="/criteria_profile")
 
@@ -354,6 +354,8 @@ def _create_tag_components(tag_values, tag_id_prefix="tag") -> Any:
     tags = []
     tag_values = [] if tag_values is None else tag_values
     for tag_value in tag_values:
+        if tag_value is None:
+            continue
         tags.append(
             dbc.Badge(
                 [

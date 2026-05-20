@@ -121,3 +121,50 @@ h3 {
   background: rgba(68, 56, 121, 0.15) !important;
   border-color: var(--color-primary-solid) !important;
 }
+
+
+.remove-btn {
+
+  width: 15%;
+  height: 44px;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  background: #6b696b !important;
+  border: none;
+  cursor: pointer;
+  color: var(--color-element-text) !important;
+  font-size: 16px;
+  transition: opacity 0.2s;
+  border-radius: 0 !important;
+}
+
+.skip-btn {
+  width: 15%;
+  height: 44px;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  background: #6b696b !important;
+  border: none;
+  cursor: pointer;
+  color: var(--color-element-text) !important;
+  font-size: 16px;
+  transition: opacity 0.2s;
+  border-radius: 0 !important;
+}
+
+.apply-btn {
+  width: 70%;
+  height: 44px;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  background: var(--color-element) !important;
+  border: none;
+  cursor: pointer;
+  color: var(--color-element-text) !important;
+  font-size: 16px;
+  transition: opacity 0.2s;
+  border-radius: 0 !important;
+}

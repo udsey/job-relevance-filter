@@ -1,3 +1,7 @@
+import base64
+import io
+import os
+
 import pandas as pd
 from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
@@ -6,10 +10,13 @@ from langchain_core.language_models import BaseChatModel
 
 import logging
 
+import pdfplumber
 from tqdm import tqdm
 from src.models import LLMJobMatchModel, LLMUserProfileModel, LinkedinJobModel
-from src.setup import config
+from src.setup import CONFIG_DIR, config
 from dotenv import load_dotenv
+
+from src.utils import save_to_yaml
 
 load_dotenv()
 
@@ -74,14 +81,39 @@ def extract_user_profile(content: str) -> LLMUserProfileModel:
     return user_profile_extraction_agent.invoke({"content": content})
 
 
-def match_jobs(
-        profile: LLMUserProfileModel, jobs: pd.DataFrame) -> pd.DataFrame:
+def match_jobs(profile: LLMUserProfileModel,
+               jobs: list[LinkedinJobModel]) -> pd.DataFrame:
     results = []
-    for _, job in tqdm(jobs.iterrows(),
-                       desc="Matching jobs.",
-                       total=jobs.shape[0]):
-        job = LinkedinJobModel(**job)
-        result = match_job(user_profile=profile, job=job)
-        results.append(result.model_dump())
+    for job in tqdm(jobs, desc="Matching jobs", total=len(jobs)):
+        try:
+            result = match_job(user_profile=profile, job=job)
+            job_dict = job.model_dump() | result.model_dump() | {"status": ""}
+            results.append(job_dict)
+        except Exception as e:
+            logger.error(e)
 
     return pd.DataFrame(results)
+
+
+def create_user_profile(
+        content: str = None,
+        filepath: str = None) -> LLMUserProfileModel:
+    if not content and not filepath:
+        logger.error("Provide content or filepath")
+    elif content:
+        _, content_string = content.split(",")
+        decoded = base64.b64decode(content_string)
+        with pdfplumber.open(io.BytesIO(decoded)) as pdf:
+            data = "\n".join(page.extract_text() for page in pdf.pages)
+    else:
+        if not os.path.exists(filepath):
+            logger.error(
+                "File was not found at {filepath}. Please provide valid path")
+            return
+        with pdfplumber.open(filepath) as pdf:
+            data = '\n'.join(page.extract_text() or '' for page in pdf.pages)
+
+    user_profile = extract_user_profile(data)
+    filepath = os.path.join(CONFIG_DIR, "profile.yaml")
+    save_to_yaml(user_profile, filepath)
+    return user_profile

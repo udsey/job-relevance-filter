@@ -88,13 +88,12 @@ class LLMConfigModel(BaseModel):
 
 class Config(BaseModel):
     max_results: Optional[int] = 25
+    relevance_threshold: Optional[float] = 0.7
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
 
 
 class LLMJobMatchModel(BaseModel):
     relevance_score: float = Field(
-        ge=0.0,
-        le=1.0,
         description="Float score between 0.0 and 1.0 indicating "
         "how well the user's profile, skills, and experience match the job "
         "position requirements. 1.0 = perfect match/excellent fit, "
@@ -103,8 +102,6 @@ class LLMJobMatchModel(BaseModel):
     )
 
     confidence_level: float = Field(
-        ge=0.0,
-        le=1.0,
         description="Numerical confidence score between 0.0 and 1.0 "
         "representing the LLM's certainty in the relevance assessment. "
         "1.0 = extremely confident based on clear evidence, "
