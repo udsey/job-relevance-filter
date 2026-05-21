@@ -1,18 +1,15 @@
-import ast
 from collections import defaultdict
 from datetime import date
 import logging
 from itertools import product
 import os
-from typing import Generator
-import pandas as pd
 from pydantic import BaseModel
 import questionary
 import requests
 import yaml
 from src.models import (LLMUserProfileModel, ParamsConfig,
                         SearchCriteria)
-from src.setup import CONFIG_DIR, DATA_DIR, config
+from src.setup import CONFIG_DIR
 
 
 logger = logging.getLogger(__name__)

@@ -27,8 +27,7 @@ def get_jobs() -> pd.DataFrame:
         _jobs_df = pd.read_csv(filepath)
         for col in ["missing_requirements", "matching_skills"]:
             _jobs_df[col] = _jobs_df[col].apply(
-                lambda x: ast.literal_eval(x) if isinstance(x, str) else []
-    )
+                lambda x: ast.literal_eval(x) if isinstance(x, str) else [])
     return _jobs_df
 
 
@@ -40,6 +39,7 @@ def get_filtered_jobs() -> pd.DataFrame:
         (df.relevance_score >= config.relevance_threshold) &
         (~df.status.isin({"apply", "remove"}))
     ]
+
 
 def invalidate_jobs() -> None:
     global _jobs_df
@@ -72,7 +72,6 @@ def layout() -> html.Div:
 
 
 def get_job_card(row: dict) -> dbc.Card:
-    job_id = int(row.job_id)
     matching = row.matching_skills or []
     missing = row.missing_requirements or []
     if isinstance(matching, str):
@@ -88,18 +87,27 @@ def get_job_card(row: dict) -> dbc.Card:
             dbc.Row([
                 dbc.Col([
                     html.H5(row.job_title, className="mb-0"),
-                    html.Small(f"{row.company} · {row.location}", className="text-muted"),
+                    html.Small(f"{row.company} · {row.location}",
+                               className="text-muted"),
                 ], xs=9),
                 dbc.Col([
-                    dbc.Badge(f"Score: {score}", color=score_color, className="float-end"),
+                    dbc.Badge(f"Score: {score}", color=score_color,
+                              className="float-end"),
                 ], xs=3),
             ], className="mb-2"),
 
             # Meta row
             html.Div([
-                dbc.Badge(row.seniority, color="light", text_color="dark", className="me-1"),
-                dbc.Badge(row.employment_type, color="light", text_color="dark", className="me-1"),
-                dbc.Badge("Easy Apply" if row.easy_apply else "External", color="info", className="me-1"),
+                dbc.Badge(row.seniority,
+                          color="light",
+                          text_color="dark",
+                          className="me-1"),
+                dbc.Badge(row.employment_type,
+                          color="light",
+                          text_color="dark",
+                          className="me-1"),
+                dbc.Badge("Easy Apply" if row.easy_apply
+                          else "External", color="info", className="me-1"),
             ], className="mb-2"),
 
             # Description preview
@@ -113,34 +121,32 @@ def get_job_card(row: dict) -> dbc.Card:
                     html.Small("Matching:", className="text-success fw-bold"),
                     html.Div([dbc.Badge(
                         s, color="success",
-                        className="me-1 mt-1") for s in matching]),
-            ]),
+                        className="me-1 mt-1") for s in matching]),]),
             dbc.Row([
                     html.Small("Missing:", className="text-danger fw-bold"),
                     html.Div([dbc.Badge(
                         s, color="danger",
-                        className="me-1 mt-1") for s in missing]),
-                ]),
+                        className="me-1 mt-1") for s in missing]),]),
 
             # Buttons
             dbc.Col([
                 dbc.Button([html.I(className="bi bi-trash")],
                            size="sm", className="remove-btn",
-                    id="remove-btn"
-                ),
+                    id="remove-btn"),
                 html.A(
-                    dbc.Button([html.I(className="bi bi-linkedin"),
-                                " Apply"],
-                                className="apply-btn", id="apply-btn"),
+                    dbc.Button([
+                        html.I(className="bi bi-linkedin"),
+                        " Apply"],
+                        className="apply-btn", id="apply-btn"),
                     href=row.job_url,
                     target="_blank"
                     ),
                 dbc.Button([html.I(className="bi bi-skip-forward")],
-                            size="sm", className="skip-btn", id="skip-btn"
-                ),
+                           size="sm", className="skip-btn", id="skip-btn"),
             ]),
         ])
     ], className="mb-3 job-card")
+
 
 def get_no_jobs_card() -> dbc.Card:
     return dbc.Card([
