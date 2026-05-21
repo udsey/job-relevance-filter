@@ -1,10 +1,12 @@
 import base64
+from datetime import datetime
 import io
 import os
 
 import pandas as pd
 from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
+from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseChatModel
 
@@ -12,7 +14,8 @@ import logging
 
 import pdfplumber
 from tqdm import tqdm
-from src.models import LLMJobMatchModel, LLMUserProfileModel, LinkedinJobModel
+from src.models import (LLMJobMatchModel, LLMJobSummaryModel,
+                        LLMUserProfileModel, LinkedinJobModel)
 from src.setup import CONFIG_DIR, config
 from dotenv import load_dotenv
 
@@ -41,6 +44,13 @@ def get_llm() -> BaseChatModel:
             temperature=config.llm_config.temperature
         )
 
+    elif model_type == "deepseek":
+        return ChatDeepSeek(
+            model=config.llm_config.model_name,
+            temperature=config.llm_config.temperature,
+            extra_body={"thinking": {"type": "disabled"}}
+        )
+
     else:
         logger.error(
             f"Unknown model type: '{model_type}'. Expected 'groq' or 'local'.")
@@ -55,11 +65,15 @@ match_job_prompt = ChatPromptTemplate.from_messages([
     ("human", "{user_profile}")
     ])
 
+job_summary_prompt = ChatPromptTemplate.from_messages([
+    ("system", config.llm_config.job_summary_prompt),
+    ("human", "{job}")
+    ])
+
 extract_user_profile_prompt = ChatPromptTemplate.from_messages([
     ("system", config.llm_config.extract_user_profile_prompt),
     ("human", "{content}")
     ])
-
 
 job_matcher_agent = (
     match_job_prompt | llm.with_structured_output(LLMJobMatchModel))
@@ -68,12 +82,22 @@ user_profile_extraction_agent = (
     extract_user_profile_prompt |
     llm.with_structured_output(LLMUserProfileModel))
 
+job_summary_extraction_agent = (
+    job_summary_prompt |
+    llm.with_structured_output(LLMJobSummaryModel))
+
 
 def match_job(job: LinkedinJobModel,
               user_profile: LLMUserProfileModel) -> LLMJobMatchModel:
     return job_matcher_agent.invoke({
         "job": job.model_dump(),
         "user_profile": user_profile.model_dump()
+    })
+
+
+def get_job_summary(job: LinkedinJobModel) -> LLMJobSummaryModel:
+    return job_summary_extraction_agent.invoke({
+        "job": job.model_dump()
     })
 
 
@@ -86,8 +110,14 @@ def match_jobs(profile: LLMUserProfileModel,
     results = []
     for job in tqdm(jobs, desc="Matching jobs", total=len(jobs)):
         try:
-            result = match_job(user_profile=profile, job=job)
-            job_dict = job.model_dump() | result.model_dump() | {"status": ""}
+            summary = get_job_summary(job=job)
+            job.job_summary = summary.job_summary
+            match = match_job(user_profile=profile, job=job)
+            job_dict = (
+                job.model_dump() |
+                match.model_dump() |
+                {"status": "new",
+                 "created_at": datetime.now()})
             results.append(job_dict)
         except Exception as e:
             logger.error(e)

@@ -1,8 +1,31 @@
 :root {
   --color-element: rgba(44, 22, 141, 0.5);
+  --color-element-sec: rgba(44, 22, 141, 0.25);
   --color-element-solid: rgb(68, 56, 121);
   --color-element-text: white;
+  --bs-danger: #e2a49d;
+  --bs-success: #79b47a;
 }
+
+
+.bg-danger {
+    background-color: #af7f7a !important;
+}
+
+.bg-success {
+    background-color:  #5f8a5f !important;
+}
+
+
+.bg-info {
+    background-color:  #8b90c6 !important;
+}
+
+
+.bg-warning {
+    background-color:  #cebc6c !important;
+}
+
 
 .navbar {
   background: var(--color-element) !important;
@@ -57,16 +80,6 @@
     opacity: 0.8;
 }
 
-
-.profile-card {
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 1.5rem;
-}
-
 .upload-drop {
   width: 500px;
   height: 80px;
@@ -79,6 +92,14 @@
   opacity: 0.8;
   transition: opacity 0.2s;
 }
+
+#upload-card .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .btn {
   width: 500px;
@@ -125,37 +146,23 @@ h3 {
 
 .remove-btn {
 
-  width: 15%;
+  width: 44px;
   height: 44px;
-  padding: 8px 16px;
-  letter-spacing: 0.08em;
-  font-weight: 400;
-  background: #6b696b !important;
+  padding: 0;
+  background: var(--color-element) !important;
   border: none;
   cursor: pointer;
   color: var(--color-element-text) !important;
-  font-size: 16px;
+  font-size: 20px;
   transition: opacity 0.2s;
-  border-radius: 0 !important;
-}
-
-.skip-btn {
-  width: 15%;
-  height: 44px;
-  padding: 8px 16px;
-  letter-spacing: 0.08em;
-  font-weight: 400;
-  background: #6b696b !important;
-  border: none;
-  cursor: pointer;
-  color: var(--color-element-text) !important;
-  font-size: 16px;
-  transition: opacity 0.2s;
-  border-radius: 0 !important;
+  border-radius: 1000px !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 44px;
 }
 
 .apply-btn {
-  width: 70%;
+  width: 360px;
   height: 44px;
   padding: 8px 16px;
   letter-spacing: 0.08em;
@@ -166,7 +173,22 @@ h3 {
   color: var(--color-element-text) !important;
   font-size: 16px;
   transition: opacity 0.2s;
-  border-radius: 0 !important;
+  border-radius: 100px !important;
+}
+
+.skip-btn {
+  width: 100px;
+  height: 44px;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  background: var(--color-element) !important;
+  border: none;
+  cursor: pointer;
+  color: var(--color-element-text) !important;
+  font-size: 16px;
+  transition: opacity 0.2s;
+  border-radius: 100px !important;
 }
 
 
@@ -174,3 +196,160 @@ h3 {
   align-items: center;
   border-color: var(--color-primary-solid) !important;
 }
+
+
+#job-card-container .card {
+    height: 800px;
+    overflow: scroll;
+}
+
+#job-card-container .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#job-card-container .card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: scroll;
+    justify-content: space-between;
+}
+
+
+.kpi-card {
+  width: 23%;
+  height: 70px;
+  margin-right: 1%;
+  margin-left: 1%;
+  margin-bottom: 15px;
+  padding: 0;
+}
+
+.kpi-card .card-header {
+    text-align: center;
+    color: aliceblue;
+    font-weight: 500;
+    padding: 0;
+    background-color: var(--color-element) !important;
+}
+
+.kpi-card .card-body {
+    text-align: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: var(--color-element-sec) !important;
+    padding: 0;
+    flex: 1;
+    font-weight: 500 !important;
+}
+
+.kpi-body {
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.kpi-body .row {
+    justify-content: center;
+}
+
+
+.dash-header {
+    background-color: #2c168d80 !important;
+    text-align: center !important;
+}
+
+.dash-filter {
+    background-color: rgba(44, 22, 141, 0.25) !important;
+    text-align: center !important;
+}
+
+.dash-cell {
+    border: 1px solid rgba(44, 22, 141, 0.5) !important;
+    text-align: center !important;
+    text-overflow: ellipsis;
+    max-width: 200px !important;
+    padding: 10px !important;
+    margin: 10px !important;
+}
+
+
+#cell-modal .modal-body {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.kanban-card {
+    width: 23%;
+    margin: .5%;
+    padding: 0 !important;
+}
+
+.kanban-card .card-body {
+    padding: 0 !important;
+}
+
+
+.kanban-btn {
+    width: 40px;
+    height: 20px;
+    padding: 0;
+    background: var(--color-element) !important;
+    border: none;
+    cursor: pointer;
+    color: var(--color-element-text) !important;
+    font-size: 10px;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.kanban-btn-reject {
+    background-color: var(--bs-danger) !important;
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+    color: var(--color-element-text) !important;
+    font-size: 20px;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100px !important;
+}
+
+.kanban-body {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.kanban-element {
+  margin: 5px;
+  width: 95% !important;
+  align-items: center;
+}
+
+.kanban-element .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    border: none;
+  }
+
+  .kanban-element .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--color-element-sec);
+    border: none;
+  }

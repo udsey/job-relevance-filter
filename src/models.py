@@ -73,23 +73,47 @@ class LinkedinJobModel(BaseModel):
     industries: Optional[str] = None
 
     easy_apply: Optional[bool] = False
+    job_summary: Optional[str] = None
 
     def __str__(self) -> str:
         return "\n".join(f"{k}: {v}" for k, v in self.__dict__.items())
 
 
 class LLMConfigModel(BaseModel):
-    model_type: Optional[Literal["local", "groq"]] = "local"
+    model_type: Optional[Literal["local", "groq", "deepseek"]] = "local"
     temperature: Optional[float] = 0.0
     model_name: Optional[str] = "llama3.2:3b"
     match_job_prompt: Optional[str] = ""
     extract_user_profile_prompt: Optional[str] = ""
+    job_summary_prompt: Optional[str] = ""
 
 
 class Config(BaseModel):
     max_results: Optional[int] = 25
+    cron: Optional[str] = "0 9 * * *"
     relevance_threshold: Optional[float] = 0.7
+    no_response_days: Optional[int] = 14
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
+
+
+class LLMJobSummaryModel(BaseModel):
+    job_summary: str = Field(
+        description="A concise 4-7 sentence human-friendly summary "
+        "of the job posting. "
+        "Structure as: (1) what the company does and the role's purpose, "
+        "(2) key responsibilities in plain language, "
+        "(3) must-have requirements and nice-to-haves, "
+        "(4) practical details: location, employment type, seniority level, "
+        "and any compensation or benefits if mentioned. "
+        "Avoid corporate jargon. Write as if explaining the job to a friend. "
+        "Example: 'Acme Corp, a fintech startup, is looking for a mid-level "
+        "Python developer to help build their fraud detection pipeline. "
+        "You'll mostly work on backend APIs and data pipelines "
+        "with some ML involvement. "
+        "They need 3+ years of Python and SQL; Spark experience is a bonus. "
+        "It's a remote full-time role, likely targeting senior "
+        "engineers based on the description.'"
+        )
 
 
 class LLMJobMatchModel(BaseModel):
@@ -145,6 +169,13 @@ class LLMJobMatchModel(BaseModel):
 
     def __str__(self) -> str:
         return "\n".join(f"{k}: {v}" for k, v in self.__dict__.items())
+
+    @field_validator('relevance_score', 'confidence_level', mode='before')
+    @classmethod
+    def normalize_score(cls, v) -> float:
+        if v is not None and v > 1.0:
+            v = v / 100.0
+        return v
 
 
 class LLMUserProfileModel(BaseModel):

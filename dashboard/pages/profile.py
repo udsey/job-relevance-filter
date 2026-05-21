@@ -10,7 +10,9 @@ from src.utils import (save_to_config,
                        save_profile)
 from src.parser import create_user_profile
 
-dash.register_page(__name__, path="/criteria_profile")
+dash.register_page(__name__, path="/profile")
+
+has_profile = False
 
 
 def layout() -> html.Div:
@@ -22,51 +24,17 @@ def layout() -> html.Div:
         profile.summary,
     ])
     return html.Div([
-        html.Div([
-            html.H3("Search Criteria:"),
-            get_criteria_form(criteria),
-            html.Button(
-                "Save",
-                id="save-criteria-btn",
-                className="nav-btn-save"),
-        ]),
-        html.Div([
-            html.H3("Profile"),
-            html.Div(
-                dbc.Card([
-                    dcc.Upload(
-                        id="resume-upload",
-                        className="upload-drop",
-                        children=html.Div(["Drop your resume here or ",
-                                           html.A("select file")]),
-                        style={"display": "none" if has_profile else "block"}
-                    ),
-                    dcc.Loading(
-                        html.Button(
-                            "Generate Profile",
-                            id="generate-profile-btn",
-                            className="btn",
-                            style={
-                                "display": "none" if has_profile else "block"}
-                        ), type="circle"),
-                    ], className="profile-card"
-                ),
-                id="upload-card",
-                hidden=has_profile
-            ),
-            html.Div(
-                get_profile_form(profile) if has_profile else None,
-                id="profile-form-container"
-            ),
-            html.Button(
-                "Save",
-                id="save-profile-btn",
-                className="nav-btn-save",
-                style={"display": "none" if not has_profile else "block"}
-            ),
-        ]),
-        dcc.Store(id="position-store", data=criteria['positions']),
-        dcc.Store(id="location-store", data=criteria['locations']),
+        get_criteria_form(criteria),
+        html.Div(get_drop_resume_form(),
+                 id="upload-card",
+                 hidden=has_profile),
+        html.Br(),
+        html.Div(get_profile_form(profile),
+                 id="profile-form-container",
+                 hidden=not has_profile),
+
+        dcc.Store(id="position-store", data=criteria.get('positions', [])),
+        dcc.Store(id="location-store", data=criteria.get('locations', [])),
         dcc.Store(id="skill-store", data=profile.technical_skills),
         dcc.Store(id="title-store", data=profile.title_history),
         dcc.Store(id="certificate-store", data=profile.certifications),
@@ -76,6 +44,7 @@ def layout() -> html.Div:
 
 def get_criteria_form(criteria) -> dbc.Card:
     return dbc.Card([
+        dbc.CardHeader("Search Criteria:"),
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
@@ -87,7 +56,7 @@ def get_criteria_form(criteria) -> dbc.Card:
                             {"label": "last week", "value": "r604800"},
                             {"label": "last month", "value": "r2592000"},
                         ],
-                        value=criteria["time_interval"][0]),
+                        value=criteria.get("time_interval", [None])[0]),
                 ], md=3),
                 dbc.Col([
                     html.Label("Experience level"),
@@ -101,7 +70,7 @@ def get_criteria_form(criteria) -> dbc.Card:
                             {"label": "Director", "value": 5},
                             {"label": "Executive", "value": 6},
                         ],
-                        value=criteria['experience_level']),
+                        value=criteria.get('experience_level', [])),
                 ], md=3),
                 dbc.Col([
                     html.Label("Job type"),
@@ -114,7 +83,7 @@ def get_criteria_form(criteria) -> dbc.Card:
                             {"label": "Temporary", "value": "T"},
                             {"label": "Internship", "value": "I"},
                         ],
-                        value=criteria['job_type']),
+                        value=criteria.get('job_type', [])),
                 ], md=3),
                 dbc.Col([
                     html.Label("Work type"),
@@ -125,7 +94,7 @@ def get_criteria_form(criteria) -> dbc.Card:
                             {"label": "On-site", "value": 2},
                             {"label": "Hybrid", "value": 3},
                         ],
-                        value=criteria['work_type']),
+                        value=criteria.get('work_type', [])),
                 ], md=3),
             ]),
             dbc.Row([
@@ -137,7 +106,7 @@ def get_criteria_form(criteria) -> dbc.Card:
                         type="text"
                     ),
                     html.Div(
-                        _create_tag_components(criteria['positions'],
+                        _create_tag_components(criteria.get('positions', []),
                                                "position"),
                         id="position-tags", className="mt-2"
                         ),
@@ -150,14 +119,45 @@ def get_criteria_form(criteria) -> dbc.Card:
                         type="text"
                     ),
                     html.Div(
-                        _create_tag_components(criteria['locations'],
+                        _create_tag_components(criteria.get('locations', []),
                                                "location"),
                         id="location-tags", className="mt-2"
                         ),
                 ], md=6),
             ], style={"marginTop": "10px"}),
         ]),
+        dbc.CardFooter([
+            html.Button(
+                "Save",
+                id="save-criteria-btn",
+                className="nav-btn-save"),
+        ])
     ])
+
+
+def get_drop_resume_form() -> dbc.Card:
+    return dbc.Card([
+        dbc.CardHeader("Profile"),
+        dbc.CardBody([
+            dcc.Upload(
+                id="resume-upload",
+                className="upload-drop",
+                children=html.Div(
+                    ["Drop your resume here or ",
+                     html.A("select file")]),
+                style={"display": "none" if has_profile else "block"}
+            ),
+            dcc.Loading(
+                html.Button(
+                    "Generate Profile",
+                    id="generate-profile-btn",
+                    className="btn",
+                    style={
+                        "display": "none" if has_profile else "block"}
+                ), type="circle"),
+
+        ]),
+        ])
 
 
 def get_profile_form(profile) -> dbc.Card:
@@ -166,6 +166,7 @@ def get_profile_form(profile) -> dbc.Card:
     certifications = _create_tag_components(profile.certifications,
                                             "certificate")
     return dbc.Card([
+        dbc.CardHeader("Profile"),
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
@@ -229,8 +230,15 @@ def get_profile_form(profile) -> dbc.Card:
                     style={"height": "150px"}
                 )
             ], style={"marginTop": "10px"}),
-        ])
-            ], className="profile-card")
+        ]),
+        dbc.CardFooter([
+            html.Button(
+                "Save",
+                id="save-profile-btn",
+                className="nav-btn-save",
+            ),
+        ]),
+            ])
 
 
 def add_tag(new_tag_value, existing_tags, tag_id_prefix="tag") -> tuple:
@@ -625,10 +633,10 @@ def reset_save_profile_btn(dirty) -> Any:
 
 @callback(
     Output("profile-form-container", "children", allow_duplicate=True),
+    Output("profile-form-container", "hidden"),
     Output("upload-card", "hidden"),
     Output("resume-upload", "style", allow_duplicate=True),
     Output("generate-profile-btn", "style", allow_duplicate=True),
-    Output("save-profile-btn", "style", allow_duplicate=True),
     Output("skill-store", "data", allow_duplicate=True),
     Output("title-store", "data", allow_duplicate=True),
     Output("certificate-store", "data", allow_duplicate=True),
@@ -644,10 +652,11 @@ def generate_profile(n_clicks, contents, filename):
     profile = create_user_profile(contents)
 
     hidden = {"display": "none"}
-    visible = {"display": "block"}
     return (
         get_profile_form(profile),
-        True, hidden, hidden, visible,
+        False,
+        True,
+        hidden, hidden,
         profile.technical_skills or [],
         profile.title_history or [],
         profile.certifications or [],
@@ -666,11 +675,11 @@ def mark_dirty(*_) -> bool:
 
 
 @callback(
-    Output("resume-upload", "className"),
-    Input("resume-upload", "contents"),
+    Output("resume-upload", "children"),
+    Input("resume-upload", "filename"),
     prevent_initial_call=True
 )
-def on_file_uploaded(contents) -> str:
-    if contents:
-        return "upload-drop upload-ready"
-    return "upload-drop"
+def on_file_uploaded(filename) -> str:
+    if filename:
+        return html.Div([filename, html.I(className="bi bi-check-lg me-2")])
+    return html.Div(["Drop your resume here or ", html.A("select file")])

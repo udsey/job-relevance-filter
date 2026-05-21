@@ -71,7 +71,9 @@ def resolve_geo_id(location: str) -> str | None:
 
 
 def _resolve_location(loc: str, locations_dict: dict) -> int | None:
-    return locations_dict.get(loc.lower()) or resolve_geo_id(loc)
+    return (
+        (locations_dict.get(loc.lower()) or resolve_geo_id(loc)) if loc
+        else None)
 
 
 def save_to_config(experience_level,

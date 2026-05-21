@@ -1,19 +1,7 @@
 search_parameters:
 - experience_level: null
-  geo_id: null
-  job_type: P
+  geo_id: '104195383'
+  job_type: null
   keywords: AI Engineer
   time_posted_interval: r86400
-  work_type: null
-- experience_level: null
-  geo_id: null
-  job_type: C
-  keywords: AI Engineer
-  time_posted_interval: r86400
-  work_type: null
-- experience_level: null
-  geo_id: null
-  job_type: F
-  keywords: AI Engineer
-  time_posted_interval: r86400
-  work_type: null
+  work_type: 1

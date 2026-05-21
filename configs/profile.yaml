@@ -1,8 +1,11 @@
-certifications: []
+certifications: null
 current_title: AI Engineer, Data Scientist
-first_experience_year: 2021
-summary: AI Engineer with expertise in Python, LLMs, and cloud-based MLOps. Proven
-  track record of driving business growth through AI-powered solutions.
+first_experience_year: 2016
+summary: AI Engineer and Data Scientist with 9+ years of experience spanning electrical
+  engineering, data science, and AI. Specializes in building LLM-powered assistants,
+  semantic search pipelines, and ML solutions for e-commerce and seismic signal processing.
+  Proven track record of driving sales growth and reducing operational costs through
+  innovative AI applications.
 technical_skills:
 - Python
 - SQL
@@ -11,7 +14,7 @@ technical_skills:
 - DeepEval
 - VectorSearch
 - PromptEngineering
-- OpenAIAPI
+- OpenAI API
 - PyTorch
 - TensorFlow
 - Hugging Face
@@ -28,14 +31,16 @@ technical_skills:
 - Looker
 - Superset
 - ChromaDB
-- PostgreSQL(pgvector)
+- PostgreSQL
+- pgvector
 - Redis
 - BigQuery
 - Kafka
 - Grafana
+- XGBoost
 title_history:
 - Electrical Engineer & Developer
+- Internship in Data Science
 - Data Scientist, R&D Engineer
-- Intern in Data Science
 - AI Engineer, Data Scientist
-years_of_experience: 5
+years_of_experience: 10
