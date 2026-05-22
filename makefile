@@ -11,3 +11,12 @@ run:
 
 dashboard:
 	@uv run python -c 'from dashboard.app import app; app.run(debug=True, host="0.0.0.0")'
+
+docker-up:
+	@docker compose up --build -d
+
+docker-logs:
+	@docker compose logs -f
+
+docker-down:
+	@docker compose down

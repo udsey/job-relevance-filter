@@ -1,7 +1,9 @@
 """Overview."""
 from datetime import datetime
+import logging
 import os
 from typing import Any
+import uuid
 
 import dash
 from dash import ALL, Input, Output, State, callback, ctx, html, no_update
@@ -13,11 +15,13 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from dashboard.app import TABLE_STYLE
+from dashboard.components.utils import hex_to_rgba, rgb_to_rgba
 from src.setup import DATA_DIR, config
+import plotly.io as pio
 from dashboard.components.kpi import kpi_card
 
-
-dash.register_page(__name__, path="/tracking")
+PATH = "/tracking"
+dash.register_page(__name__, path=PATH)
 
 filepath = os.path.join(DATA_DIR, "jobs.csv")
 STAGES = ["applied", "screened", "interview", "offered"]
@@ -45,6 +49,7 @@ def read_jobs_csv() -> pd.DataFrame | None:
         return None
     at_cols = [c for c in df.columns if c.endswith("_at")]
     df[at_cols] = df[at_cols].apply(pd.to_datetime)
+    df["response_status"] = df.apply(get_status, axis=1)
     return df[df.status == "applied"]
 
 
@@ -113,9 +118,26 @@ def layout() -> html.Div:
         get_sankey(df),
         get_kanban(job_table),
         get_table(job_table),
-        dbc.Modal([dbc.ModalBody(
-            id="tr-cell-modal-body"),], id="tr-cell-modal"),
-    ])
+        dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle(id="notes-modal-title")),
+            dbc.ModalBody(
+                dcc.Textarea(id="note-textarea"))
+        ], id="kanban-notes-modal"),
+        dcc.Store(id="notes-store"),
+        dcc.Store(id="add-job-stage-store"),
+        dcc.Location(id="page-location", refresh=True),
+        dbc.Modal([
+            dbc.ModalHeader("Add Job"),
+            dbc.ModalBody([
+                dbc.Input(id="add-job-title", placeholder="Job Title"),
+                dbc.Input(id="add-job-company", placeholder="Company"),
+                dbc.Input(id="add-job-url", placeholder="URL"),
+                dbc.Input(id="add-job-location", placeholder="Location"),
+                dbc.Textarea(id="add-job-notes",
+                             placeholder="Notes (optional)"),
+            ]),
+        ], id="add-job-modal"),
+            ])
 
 
 def get_no_applications_card() -> dbc.Card:
@@ -128,25 +150,28 @@ def get_no_applications_card() -> dbc.Card:
     ], className="no-jobs-card")
 
 
-def get_table(df: pd.DataFrame) -> dash_table:
+def get_table(df: pd.DataFrame) -> html.Div:
     df["job_url"] = df["job_url"].apply(
         lambda x: f"[link]({x})" if pd.notna(x) else "")
-    return dash_table.DataTable(
-                    id="job-aplication-table",
-                    data=df.to_dict("records"),
-                    columns=[
-                        {"name": c,
-                         "id": c,
-                         "presentation": "markdown"} if c == "job_url"
-                        else {"name": c, "id": c}
-                        for c in df.columns
-                    ],
-                    page_size=20,
-                    sort_action="native",
-                    filter_action="native",
-                    markdown_options={"link_target": "_blank"},
-                    **TABLE_STYLE
-                )
+    df = df[df.response_status != "rejected"]
+    return html.Div(
+                    dash_table.DataTable(
+                        id="job-aplication-table",
+                        data=df.to_dict("records"),
+                        columns=[
+                            {"name": c,
+                            "id": c,
+                            "presentation": "markdown"} if c == "job_url"
+                            else {"name": c, "id": c}
+                            for c in df.columns
+                        ],
+                        page_size=20,
+                        sort_action="native",
+                        filter_action="native",
+                        markdown_options={"link_target": "_blank"},
+                        **TABLE_STYLE
+                    ),
+                    id="table-container",)
 
 
 def get_kpis(kpis: dict) -> html.Div:
@@ -187,13 +212,18 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
     add("Interview", "Offered", (interviewed & offered).sum())
     add("Interview", "Rejected", (interviewed & rejected & ~offered).sum())
     add("Offered", "Rejected", (offered & rejected).sum())
+    colors = pio.templates["custom"].layout.colorway
+    node_colors = [rgb_to_rgba(c, alpha=0.4) for c in colors[:len(labels)]]
 
     fig = go.Figure(go.Sankey(
-        node=dict(label=labels),
+        node=dict(label=labels,
+                  pad=40,
+                  thickness=10,
+                  color=colors),
         link=dict(source=sources,
                   target=targets,
                   value=values,
-                  color=px.colors.qualitative.Plotly[:len(labels)])
+                  color=node_colors)
     ))
     fig.update_layout(title="Application Funnel")
     return dcc.Graph(figure=fig)
@@ -208,6 +238,12 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
                     get_kanban_card(row)
                     for _, row in df[df.response_status == stage].iterrows()
                 ], id=f"kanban-{stage}"),
+                dbc.CardFooter(
+                    dbc.Button(html.I(className="bi bi-plus"),
+                       size="sm",
+                       className="kanban-add-btn",
+                       id={"type": "kanban-add", "index": stage}),
+                ),
             ], className="kanban-card") for stage in STAGES
         ]),
     ], className="kanban-body", id="kanban-container")
@@ -215,7 +251,14 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
 
 def get_kanban_card(row) -> dbc.Card:
     return dbc.Card([
-        dbc.CardHeader(html.Small(row.job_title)),
+        dbc.CardHeader([
+            html.Small(row.job_title),
+            dbc.Button(
+                html.I(className="bi bi-journal-text"),
+                size="sm",
+                style={"fontSize": "20px"},
+                className="kanban-note-btn",
+                id={"type": "kanban-note", "index": str(row.job_id)})]),
         dbc.CardBody([
             html.Small([
                 row.company, " · ",
@@ -254,14 +297,29 @@ def show_cell(active_cell, data) -> tuple:
 
 
 @callback(
-    Output("kanban-container", "children"),
-    Input({"type": "kanban-next", "index": ALL}, "n_clicks"),
-    Input({"type": "kanban-prev", "index": ALL}, "n_clicks"),
+    Output("page-location", "href", allow_duplicate=True),
     Input({"type": "kanban-reject", "index": ALL}, "n_clicks"),
     prevent_initial_call=True
 )
-def on_kanban_action(next_clicks, prev_clicks, reject_clicks) -> Any:
-    if not any(next_clicks + prev_clicks + reject_clicks):
+def on_kanban_reject_action(n_clicks) -> Any:
+    if not any(n_clicks):
+        return no_update
+    triggered = ctx.triggered_id
+    if not triggered:
+        return no_update
+    job_id = triggered["index"]
+    update_csv(job_id, "rejected_at", str(datetime.now()))
+    return PATH
+
+
+@callback(
+    Output("kanban-container", "children"),
+    Input({"type": "kanban-next", "index": ALL}, "n_clicks"),
+    Input({"type": "kanban-prev", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def on_kanban_nav_action(next_clicks, prev_clicks) -> Any:
+    if not any(next_clicks + prev_clicks):
         return no_update
 
     triggered = ctx.triggered_id
@@ -286,9 +344,96 @@ def on_kanban_action(next_clicks, prev_clicks, reject_clicks) -> Any:
         if idx > 0:
             update_csv(job_id, STAGE_COL[current_status], None)
 
-    elif action == "kanban-reject":
-        update_csv(job_id, "rejected_at", str(datetime.now()))
-
     df = read_jobs_csv()
     job_table = get_job_table(df)
     return get_kanban(job_table).children
+
+
+@callback(
+    Output("kanban-notes-modal", "is_open"),
+    Output("notes-modal-title", "children"),
+    Output("note-textarea", "value"),
+    Output("notes-store", "data"),
+    Input({"type": "kanban-note", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def on_kanban_note(note_clicks) -> tuple:
+    if not any(note_clicks):
+        return no_update, no_update, no_update, no_update
+    triggered = ctx.triggered_id
+    if not triggered:
+        return no_update, no_update, no_update, no_update
+    job_id = triggered["index"]
+    df = read_jobs_csv()
+    row = df[df.job_id == int(job_id)].iloc[0]
+    title = f"{row.job_title} · {row.company}"
+    notes = str(row.notes) if pd.notna(row.notes) else ""
+    return True, title, notes, job_id
+
+
+@callback(
+    Output("table-container", "children"),
+    Input("kanban-notes-modal", "is_open"),
+    State("notes-store", "data"),
+    State("note-textarea", "value"),
+    prevent_initial_call=True
+)
+def on_notes_close(is_open, job_id, notes) -> Any:
+    if is_open or not job_id:
+        return no_update
+    update_csv(job_id, "notes", notes)
+    job_table = get_job_table(read_jobs_csv())
+    return get_table(job_table)
+
+
+@callback(
+    Output("add-job-modal", "is_open"),
+    Output("add-job-stage-store", "data"),
+    Input({"type": "kanban-add", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def on_add_job(n_clicks) -> Any:
+    if not any(n_clicks):
+        return no_update, no_update
+    triggered = ctx.triggered_id
+    if not triggered:
+        return no_update, no_update
+    return True, triggered["index"]
+
+
+@callback(
+    Output("page-location", "href", allow_duplicate=True),
+    Input("add-job-modal", "is_open"),
+    State("add-job-stage-store", "data"),
+    State("add-job-title", "value"),
+    State("add-job-company", "value"),
+    State("add-job-url", "value"),
+    State("add-job-location", "value"),
+    State("add-job-notes", "value"),
+    prevent_initial_call=True
+)
+def on_add_job_close(is_open, stage, title,
+                     company, url, location, notes) -> tuple:
+    if is_open or not stage or not title:
+        return no_update
+
+    job_id = int(datetime.now().timestamp() * 1000)
+    now = str(datetime.now())
+
+    new_row = {
+        "job_id": job_id,
+        "job_title": title,
+        "company": company,
+        "job_url": url,
+        "location": location,
+        "notes": notes,
+        "status": "applied",
+    }
+    for s in STAGES:
+        new_row[STAGE_COL[s]] = (
+            now if STAGES.index(s) <= STAGES.index(stage) else None)
+
+    df = pd.read_csv(filepath)
+    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    df.to_csv(filepath, index=False)
+    return PATH

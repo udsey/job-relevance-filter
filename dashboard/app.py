@@ -4,17 +4,15 @@ import dash
 from dash import html
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output
+import plotly.express as px
 
 import plotly.io as pio
 
 # from src.scheduler import start_scheduler
 # start_scheduler()
 
-pio.templates["custom"] = pio.templates["plotly_white"]
-pio.templates["custom"].layout.colorway = [
-    "rgba(44, 22, 141, 0.5)", "#e2a49d", "#d4c0a0", "#9ca4d3"
-]
-
+pio.templates["custom"] = pio.templates["plotly_dark"]
+pio.templates["custom"].layout.colorway = px.colors.qualitative.Prism
 pio.templates.default = "custom"
 
 TABLE_STYLE = {
@@ -22,18 +20,22 @@ TABLE_STYLE = {
         "overflowX": "auto",
         "width": "100%",
         "minWidth": "100%",
+        "margin": "20px 0 20px",
     },
     "style_cell": {
         "maxWidth": "200px",
+        "maxHeight": "200px",
     },
 }
 
 app = Dash(__name__,
            use_pages=True,
            pages_folder="pages",
-           external_stylesheets=[dbc.themes.BOOTSTRAP,
+           external_stylesheets=[dbc.themes.CYBORG,
                                  dbc.icons.BOOTSTRAP],
            suppress_callback_exceptions=True,
+           external_scripts=["/assets/note_area.js"],
+
            )
 
 app.layout = dbc.Container([

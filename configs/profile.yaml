@@ -1,11 +1,11 @@
-certifications: null
+certifications: []
 current_title: AI Engineer, Data Scientist
 first_experience_year: 2016
 summary: AI Engineer and Data Scientist with 9+ years of experience spanning electrical
   engineering, data science, and AI. Specializes in building LLM-powered assistants,
-  semantic search pipelines, and ML solutions for e-commerce and seismic signal processing.
+  semantic search pipelines, and ML models for e-commerce and seismic signal processing.
   Proven track record of driving sales growth and reducing operational costs through
-  innovative AI applications.
+  AI solutions.
 technical_skills:
 - Python
 - SQL
@@ -31,8 +31,7 @@ technical_skills:
 - Looker
 - Superset
 - ChromaDB
-- PostgreSQL
-- pgvector
+- PostgreSQL (pgvector)
 - Redis
 - BigQuery
 - Kafka

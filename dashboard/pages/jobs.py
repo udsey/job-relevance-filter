@@ -87,7 +87,7 @@ def get_job_card(row: dict) -> dbc.Card:
         missing = [s.strip() for s in missing.split(",") if s.strip()]
 
     score = row.relevance_score
-    score_color = "success" if score and score >= 0.7 else "warning"
+    score_color = "info" if score and score >= 0.7 else "warning"
     return dbc.Card([
         dbc.CardBody([
             # Header row
@@ -125,24 +125,26 @@ def get_job_card(row: dict) -> dbc.Card:
 
             # Skills
             dbc.Row([
-                    html.Small("Matching:", className="fw-bold"),
+                    html.Big("Matching:"),
                     html.Div([dbc.Badge(
-                        s, color="success",
+                        s, color="info", style={"fontWeight": "600"},
                         className="me-1 mt-1") for s in matching]),]),
             dbc.Row([
-                    html.Small("Missing:", className="fw-bold"),
+                    html.Big("Missing:"),
                     html.Div([dbc.Badge(
-                        s, color="danger",
+                        s, color="info", style={"fontWeight": "600"},
                         className="me-1 mt-1") for s in missing]),]),
         ]),
         dbc.CardFooter([
             dbc.Button([html.I(className="bi bi-trash")],
-                       size="sm", className="remove-btn", id="remove-btn"),
+                       size="sm",
+                       className="remove-btn",
+                       id="remove-btn"),
             html.A(
                 dbc.Button([
                     html.I(className="bi bi-linkedin"),
                     " Apply"],
-                    className="apply-btn", id="apply-btn"),
+                    className="apply-btn", id="apply-btn", color="info"),
                 href=row.job_url,
                 target="_blank",
                 style={"display": "flex", "textDecoration": "none"}

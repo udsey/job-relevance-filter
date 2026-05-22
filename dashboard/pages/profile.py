@@ -592,10 +592,10 @@ def save_criteria(n_clicks,
             positions=positions,
             time_interval=time_interval
         )
-        return "✅ Saved"
+        return "Saved"
     except Exception as e:
         logging.error(e)
-        return "❌ Failed"
+        return f"Failed: {e[:100]}"
 
 
 @callback(
@@ -616,10 +616,10 @@ def on_save_profile(n_clicks, summary, technical_skills, current_title,
     try:
         save_profile(summary, technical_skills, current_title,
                      title_history, certifications, years_of_experience)
-        return "✅ Saved"
+        return "Saved"
     except Exception as e:
         logging.error(e)
-        return "❌ Failed"
+        return f"Failed: {e[:100]}"
 
 
 @callback(
