@@ -10,6 +10,7 @@ from dash import dash_table
 import pandas as pd
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+import plotly.express as px
 
 from dashboard.app import TABLE_STYLE
 from src.setup import DATA_DIR, config
@@ -189,7 +190,10 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
 
     fig = go.Figure(go.Sankey(
         node=dict(label=labels),
-        link=dict(source=sources, target=targets, value=values)
+        link=dict(source=sources,
+                  target=targets,
+                  value=values,
+                  color=px.colors.qualitative.Plotly[:len(labels)])
     ))
     fig.update_layout(title="Application Funnel")
     return dcc.Graph(figure=fig)
