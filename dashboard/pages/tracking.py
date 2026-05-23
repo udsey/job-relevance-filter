@@ -183,8 +183,8 @@ def get_kpis(kpis: dict) -> html.Div:
 
 
 def get_sankey(df: pd.DataFrame) -> dcc.Graph:
-    labels = ["Applied", "Screening", "Interview",
-              "Offered", "Rejected", "No Response"]
+    labels = ["Applied", "Screened", "Interview",
+          "Offered", "Rejected", "No Response", "Pending"]
     idx = {le: i for i, le in enumerate(labels)}
 
     sources, targets, values = [], [], []
@@ -195,30 +195,51 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
             targets.append(idx[tgt])
             values.append(count)
 
-    screened = df["screened_at"].notna()
-    interviewed = df["interview_at"].notna()
-    offered = df["offered_at"].notna()
-    rejected = df["rejected_at"].notna()
+    def get_no_response_stage(row) -> str:
+        if pd.notna(row["interview_at"]):
+            return "Interview"
+        if pd.notna(row["screened_at"]):
+            return "Screened"
+        return "Applied"
 
-    add("Applied", "No Response", (~screened).sum())
-    add("Applied", "Screening", screened.sum())
-    add("Screening", "Interview", (screened & interviewed).sum())
-    add("Screening", "Rejected", (screened & rejected & ~interviewed).sum())
-    add("Interview", "Offered", (interviewed & offered).sum())
-    add("Interview", "Rejected", (interviewed & rejected & ~offered).sum())
-    add("Offered", "Rejected", (offered & rejected).sum())
+    df["_status"] = df.apply(get_status, axis=1)
+    df["_nr_stage"] = df.apply(get_no_response_stage, axis=1)
+
+    no_resp = df[df["_status"] == "no_response"]
+    active = df[df["_status"] != "no_response"]
+
+    add("Applied", "No Response",
+        (no_resp["_nr_stage"] == "Applied").sum())
+    add("Applied", "Pending",
+        (active["_status"] == "applied").sum())
+    add("Applied", "Screened",
+        (active["_status"].isin(
+            ["screened", "interview", "offered", "rejected"])).sum()
+        + (no_resp["_nr_stage"].isin(["Screened", "Interview"])).sum())
+    add("Screened", "No Response",
+        (no_resp["_nr_stage"] == "Screened").sum())
+    add("Screened", "Pending",
+        (active["_status"] == "screened").sum())
+    add("Screened", "Interview",
+        (active["_status"].isin(
+            ["interview", "offered", "rejected"])).sum()
+        + (no_resp["_nr_stage"] == "Interview").sum())
+    add("Interview", "No Response",
+        (no_resp["_nr_stage"] == "Interview").sum())
+    add("Interview", "Pending",
+        (active["_status"] == "interview").sum())
+    add("Interview", "Offered",
+        (active["_status"] == "offered").sum())
+    add("Interview", "Rejected",
+        (active["_status"] == "rejected").sum())
+
     colors = pio.templates["custom"].layout.colorway
     node_colors = [rgb_to_rgba(c, alpha=0.4) for c in colors[:len(labels)]]
 
     fig = go.Figure(go.Sankey(
-        node=dict(label=labels,
-                  pad=40,
-                  thickness=10,
-                  color=colors),
-        link=dict(source=sources,
-                  target=targets,
-                  value=values,
-                  color=node_colors)
+        node=dict(label=labels, pad=40, thickness=10, color=colors),
+        link=dict(source=sources, target=targets,
+                  value=values, color=node_colors)
     ))
     fig.update_layout(title="Application Funnel")
     return dcc.Graph(figure=fig)
