@@ -71,6 +71,7 @@ Opens at `http://localhost:8050`. From the dashboard you can:
 - **Overview** — KPI cards, charts, and data table of all jobs
 - **Jobs** — one-at-a-time job review with accept / skip / remove
 - **Profile** — search criteria form and LLM-powered profile extraction from PDF
+- **Match Job** — paste a job description and get an instant relevance score, matching skills, and missing requirements against your profile
 - **Tracking** — Kanban board and funnel chart to manage applications
 
 ### Other commands

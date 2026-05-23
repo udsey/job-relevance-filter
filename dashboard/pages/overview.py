@@ -10,7 +10,8 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 
 from dashboard.app import TABLE_STYLE
-from src.setup import DATA_DIR, config
+from src.setup import CONFIG_DIR, DATA_DIR, config
+from src.utils import load_existing_criteria, load_existing_profile
 from dashboard.components.kpi import kpi_card
 
 
@@ -79,7 +80,7 @@ def get_chart_data(df: pd.DataFrame) -> dict:
 def layout() -> html.Div:
     df = read_jobs_csv()
     if df is None or df.empty:
-        return html.Div()
+        return get_empty_page()
 
     kpis = get_kpi_dict(df)
     chart_data = get_chart_data(df)
@@ -89,6 +90,60 @@ def layout() -> html.Div:
         get_charts(chart_data),
         get_table(df),
         dbc.Modal([dbc.ModalBody(id="cell-modal-body"),], id="cell-modal"),
+    ])
+
+
+def get_empty_page() -> html.Div:
+    setups = set()
+    if (not os.path.exists(os.path.join(CONFIG_DIR, "criteria.yaml"))
+            or not load_existing_criteria()):
+        setups.add("criteria")
+
+    if not os.path.exists(os.path.join(CONFIG_DIR, "profile.yaml")):
+        setups.add("profile")
+    else:
+        profile = load_existing_profile()
+        if (
+            profile is None or not any(
+                profile.model_dump(exclude={"years_of_experience"}).values())):
+            setups.add("profile")
+
+    if setups:
+        missing = ", ".join(sorted(setups))
+        text = html.Div([
+            html.P(
+                f"Please complete the following setup(s): {missing}."
+            ),
+            html.P([
+                "Go to the ",
+                dcc.Link("Profile page", href="/profile"),
+                " to configure them.",
+            ]),
+        ])
+    else:
+        cron_expr = config.cron.replace(" ", "+")
+        text = html.Div([
+            html.P(
+                "Your next job search is scheduled to run "
+                "according to your cron schedule:"
+            ),
+            html.P([
+                html.Code(config.cron),
+            ]),
+            html.P([
+                html.A(
+                    "Explain this schedule on crontab.guru",
+                    href=f"https://crontab.guru/#{cron_expr}",
+                    target="_blank",
+                ),
+            ]),
+        ])
+    return html.Div([
+        html.H3("No jobs found yet"),
+        dbc.Card([
+            dbc.CardBody(text),
+            dbc.CardImg(src="assets/empty_overview.jpg", bottom=True),
+        ])
     ])
 
 

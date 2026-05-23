@@ -101,6 +101,16 @@ def get_job_summary(job: LinkedinJobModel) -> LLMJobSummaryModel:
     })
 
 
+def match_job_from_description(job_description: str,
+                               user_profile: LLMUserProfileModel
+                               ) -> LLMJobMatchModel:
+    job = job_summary_extraction_agent.invoke({"job": job_description})
+    return job_matcher_agent.invoke({
+        "job": job,
+        "user_profile": user_profile.model_dump()
+    }), job
+
+
 def extract_user_profile(content: str) -> LLMUserProfileModel:
     return user_profile_extraction_agent.invoke({"content": content})
 

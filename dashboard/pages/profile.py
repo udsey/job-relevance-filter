@@ -18,11 +18,9 @@ has_profile = False
 def layout() -> html.Div:
     criteria = load_existing_criteria()
     profile = load_existing_profile()
-    has_profile = any([
-        profile.current_title,
-        profile.technical_skills,
-        profile.summary,
-    ])
+    has_profile = (
+            profile is not None and any(
+                profile.model_dump(exclude={"years_of_experience"}).values()))
     return html.Div([
         get_criteria_form(criteria),
         html.Div(get_drop_resume_form(),
@@ -166,7 +164,12 @@ def get_profile_form(profile) -> dbc.Card:
     certifications = _create_tag_components(profile.certifications,
                                             "certificate")
     return dbc.Card([
-        dbc.CardHeader("Profile"),
+        dbc.CardHeader([
+            "Profile",
+            dbc.Button([html.I(className="bi bi-arrow-clockwise")],
+                       size="sm", id="re-generate-btn", className="float-end",
+                       title="Re-generate profile"),
+            ]),
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
@@ -595,11 +598,15 @@ def save_criteria(n_clicks,
         return "Saved"
     except Exception as e:
         logging.error(e)
-        return f"Failed: {e[:100]}"
+        return f"Failed: {e}"
 
 
 @callback(
     Output("save-profile-btn", "children", allow_duplicate=True),
+    Output("profile-form-container", "hidden", allow_duplicate=True),
+    Output("upload-card", "hidden", allow_duplicate=True),
+    Output("resume-upload", "style", allow_duplicate=True),
+    Output("generate-profile-btn", "style", allow_duplicate=True),
     Input("save-profile-btn", "n_clicks"),
     State("summary-input", "value"),
     State("skill-store", "data"),
@@ -610,16 +617,17 @@ def save_criteria(n_clicks,
     prevent_initial_call=True
 )
 def on_save_profile(n_clicks, summary, technical_skills, current_title,
-                    title_history, certifications, years_of_experience) -> str:
+                    title_history, certifications, years_of_experience):
     if not n_clicks:
-        return no_update
+        return (no_update, no_update, no_update, no_update, no_update)
     try:
         save_profile(summary, technical_skills, current_title,
                      title_history, certifications, years_of_experience)
-        return "Saved"
+        return ("Saved", no_update, no_update, no_update, no_update)
     except Exception as e:
         logging.error(e)
-        return f"Failed: {e[:100]}"
+        hidden = {"display": "block"}
+        return (f"Failed: {e}", True, False, hidden, hidden)
 
 
 @callback(
@@ -633,8 +641,8 @@ def reset_save_profile_btn(dirty) -> Any:
 
 @callback(
     Output("profile-form-container", "children", allow_duplicate=True),
-    Output("profile-form-container", "hidden"),
-    Output("upload-card", "hidden"),
+    Output("profile-form-container", "hidden", allow_duplicate=True),
+    Output("upload-card", "hidden", allow_duplicate=True),
     Output("resume-upload", "style", allow_duplicate=True),
     Output("generate-profile-btn", "style", allow_duplicate=True),
     Output("skill-store", "data", allow_duplicate=True),
@@ -661,6 +669,21 @@ def generate_profile(n_clicks, contents, filename):
         profile.title_history or [],
         profile.certifications or [],
     )
+
+
+@callback(
+    Output("profile-form-container", "hidden", allow_duplicate=True),
+    Output("upload-card", "hidden", allow_duplicate=True),
+    Output("resume-upload", "style", allow_duplicate=True),
+    Output("generate-profile-btn", "style", allow_duplicate=True),
+    Input("re-generate-btn", "n_clicks"),
+    prevent_initial_call=True
+)
+def on_re_generate(n_clicks) -> tuple:
+    """Hide profile form and show drop/resume upload form."""
+    if not n_clicks:
+        return no_update, no_update, no_update, no_update
+    return True, False, {"display": "block"}, {"display": "block"}
 
 
 @callback(

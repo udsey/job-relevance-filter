@@ -1,0 +1,110 @@
+cron: 0 9 * * *
+last_run: 2026-05-23
+llm_config:
+  extract_user_profile_prompt: "You are a professional resume parser. Extract structured\
+    \ information from the resume below according to the exact JSON schema provided.\n\
+    \nRULES:\n- Extract ALL fields from the resume. Do not skip any field.\n- ALWAYS\
+    \ populate first_experience_year based on the earliest start date found anywhere\
+    \ in work history.\n- ALWAYS populate current_title from the most recent job entry.\n\
+    - ALWAYS populate title_history with every job title found, in chronological order\
+    \ from earliest to most recent.\n- ALWAYS populate summary. If no explicit summary\
+    \ section exists, synthesize one from work history, skills, and career trajectory.\n\
+    - ALWAYS populate technical_skills. If explicitly listed, extract them. If no\
+    \ skills section exists, infer from job descriptions and tools mentioned.\n- ALWAYS\
+    \ populate certifications. If none found, set to null.\n- Do not leave any field\
+    \ empty. Every field must have either a value or null.\n- Do not skip fields even\
+    \ if information seems incomplete.\n- Extract what exists. Infer reasonably when\
+    \ context is clear. Otherwise use null.\n\nOUTPUT REQUIREMENTS:\n- Return ONLY\
+    \ valid JSON\n- Use null only for fields that cannot be extracted\n- Follow the\
+    \ schema exactly\n\nJSON SCHEMA:\n\n  summary: string or null - Concise 2-3 sentence\
+    \ professional summary capturing: current career stage, primary domain/industry,\
+    \ key strengths, career trajectory. Example: Senior full-stack developer with\
+    \ 8 years of e-commerce experience, specializing in Python and React. Led teams\
+    \ of 5+ engineers and reduced infrastructure costs by 40%,\n\n  technical_skills:\
+    \ array of strings or null - Extract hard/technical skills only: programming languages,\
+    \ frameworks, tools, platforms, methodologies, software. Exclude soft skills.\
+    \ Example: [Python, AWS, Docker, PostgreSQL],\n\n  first_experience_year: integer\
+    \ or null (1900-2026) - Year of first professional work experience. Look for earliest\
+    \ start date across full-time, part-time, internships, contracts, freelance. Extract\
+    \ only the year. Example: 2015,\n\n  current_title: string or null - Most recent\
+    \ job title exactly as written. Do not standardize. If unemployed, use most recent\
+    \ title. Example: Senior Software Engineer,\n\n  title_history: array of strings\
+    \ or null - All professional job titles in chronological order (earliest to most\
+    \ recent). Include exact titles. Example: [Junior Developer, Software Engineer,\
+    \ Senior Software Engineer],\n\n  certifications: array of strings or null - Professional\
+    \ certifications with issuing body and year when available. Format: Name - Issuing\
+    \ Body, Year. Example: [PMP - Project Management Institute, 2021, AWS Solutions\
+    \ Architect - Amazon, 2023]\n\n\nRESUME TEXT:\n{content}\n"
+  job_summary_prompt: 'You are a helpful assistant that summarizes job postings in
+    a clear, human-friendly way.
+
+
+    Given the following job posting data, write a concise and informative summary
+    that helps a candidate quickly understand the role.
+
+
+    Job Data:
+
+    {job}
+
+
+    Focus on:
+
+    - What the company does and what this role is about
+
+    - Key day-to-day responsibilities
+
+    - Must-have and nice-to-have requirements
+
+    - Practical details: location, seniority, employment type, compensation or benefits
+    if available
+
+
+    Write in plain, conversational English. Avoid repeating raw field names or corporate
+    jargon.
+
+    '
+  match_job_prompt: 'You are a job matching expert. Evaluate how well the candidate
+    matches the job position.
+
+
+    First, parse the JSON below to extract job and candidate information.
+
+
+    JOB (JSON): {job}
+
+
+    CANDIDATE (JSON): {user_profile}
+
+
+    RULES:
+
+    - Extract matching_skills from intersection of job requirements and candidate''s
+    technical_skills
+
+    - Extract missing_requirements from job requirements not found in candidate''s
+    profile
+
+    - Calculate relevance_score: 1.0 = perfect, 0.7-0.9 = strong, 0.4-0.6 = partial,
+    0.1-0.3 = weak, 0.0 = no match
+
+    - Set confidence_level based on completeness of job description and candidate
+    profile
+
+    - recommendation must be one of: INTERVIEW, CONSIDER, REJECT, NEED_MORE_INFO
+
+    - reason must explain both strengths and gaps
+
+
+    OUTPUT ONLY VALID JSON with fields:
+
+    relevance_score, confidence_level, reason, matching_skills, missing_requirements,
+    recommendation
+
+    '
+  model_name: deepseek-v4-flash
+  model_type: deepseek
+  temperature: 0.2
+max_results: 25
+no_response_days: 14
+relevance_threshold: 0.65

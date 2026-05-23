@@ -4,6 +4,7 @@
 __pycache__
 
 configs/*
+!configs/config.yaml
 data/*
 *.ipynb
 

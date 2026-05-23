@@ -36,5 +36,6 @@ CONFIG_DIR = os.getcwd()
 DATA_DIR = os.path.join(CONFIG_DIR, 'data')
 CONFIG_DIR = os.path.join(CONFIG_DIR, 'configs')
 os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(CONFIG_DIR, exist_ok=True)
 
 config = load_config()

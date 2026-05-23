@@ -37,7 +37,8 @@ app = Dash(__name__,
            external_stylesheets=[dbc.themes.CYBORG,
                                  dbc.icons.BOOTSTRAP],
            suppress_callback_exceptions=True,
-           external_scripts=["/assets/note_area.js"],
+           external_scripts=["/assets/note_area.js",
+                             "/assets/match_job_text_area.js"],
 
            )
 
@@ -52,8 +53,8 @@ app.layout = dbc.Container([
             dbc.NavItem(dbc.NavLink("Overview", href="/")),
             dbc.NavItem(dbc.NavLink("Jobs", href="/jobs")),
             dbc.NavItem(dbc.NavLink("Jobs Tracking", href="/tracking")),
-            dbc.NavItem(dbc.NavLink("Profile",
-                                    href="/profile")),
+            dbc.NavItem(dbc.NavLink("Match Job", href="/match-job")),
+            dbc.NavItem(dbc.NavLink("Criteria & Profile", href="/profile")),
         ],
         className="mb-4"
     ),

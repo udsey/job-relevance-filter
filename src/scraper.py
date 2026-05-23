@@ -129,16 +129,16 @@ def add_job_details(jobs: LinkedinJobModel) -> tuple:
             if not soup:
                 continue
             btn = ("public_jobs_contextual-sign-"
-                "in-modal_ssr-ui-lib-outlet-button")
+                   "in-modal_ssr-ui-lib-outlet-button")
             apply_tracking = soup.find(
                 "button", {"data-tracking-control-name": btn})
             apply_icon = (apply_tracking.find("icon") if apply_tracking
                           else None)
             apply_icon = (apply_icon.get('data-svg-class-name') if apply_icon
-                        else "")
+                          else "")
             job.easy_apply = "offsite" not in apply_icon
             applicant_info = soup.find("figcaption",
-                                    class_="num-applicants__caption")
+                                       class_="num-applicants__caption")
             if applicant_info:
                 job.applicants_info = applicant_info.get_text(strip=True)
 
