@@ -7,8 +7,11 @@ from dash import Dash, Input, Output
 import plotly.express as px
 
 import plotly.io as pio
-
+import logging
 from src.scheduler import start_scheduler
+
+logging.basicConfig(level=logging.INFO)
+
 start_scheduler()
 
 pio.templates["custom"] = pio.templates["plotly_dark"]

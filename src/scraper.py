@@ -121,63 +121,74 @@ def add_job_details(jobs: LinkedinJobModel) -> tuple:
     job_list = []
     ids = set()
     for job in jobs:
-        job_details = get_job_getails_content(job.job_id)
-        if not job_details:
-            continue
-        soup = BeautifulSoup(job_details, "html.parser")
-        if not soup:
-            continue
-        btn = ("public_jobs_contextual-sign-"
-               "in-modal_ssr-ui-lib-outlet-button")
-        apply_tracking = soup.find(
-            "button", {"data-tracking-control-name": btn})
-        apply_icon = apply_tracking.find("icon") if apply_tracking else None
-        apply_icon = (apply_icon.get('data-svg-class-name') if apply_icon
-                      else "")
-        job.easy_apply = "offsite" not in apply_icon
-        applicant_info = soup.find("figcaption",
-                                   class_="num-applicants__caption")
-        if applicant_info:
-            job.applicants_info = applicant_info.get_text(strip=True)
+        try:
+            job_details = get_job_getails_content(job.job_id)
+            if not job_details:
+                continue
+            soup = BeautifulSoup(job_details, "html.parser")
+            if not soup:
+                continue
+            btn = ("public_jobs_contextual-sign-"
+                "in-modal_ssr-ui-lib-outlet-button")
+            apply_tracking = soup.find(
+                "button", {"data-tracking-control-name": btn})
+            apply_icon = (apply_tracking.find("icon") if apply_tracking
+                          else None)
+            apply_icon = (apply_icon.get('data-svg-class-name') if apply_icon
+                        else "")
+            job.easy_apply = "offsite" not in apply_icon
+            applicant_info = soup.find("figcaption",
+                                    class_="num-applicants__caption")
+            if applicant_info:
+                job.applicants_info = applicant_info.get_text(strip=True)
 
-        description_div = soup.find("div",
-                                    class_="description__text--rich")
-        job.description = (
-            description_div.get_text(separator="\n", strip=True)
-            if description_div
-            else None)
+            description_div = soup.find("div",
+                                        class_="description__text--rich")
+            job.description = (
+                description_div.get_text(separator="\n", strip=True)
+                if description_div
+                else None)
 
-        seniority = soup.find(
-            "span",
-            class_="description__job-criteria-text--criteria")
-        if seniority:
-            job.seniority = seniority.get_text(strip=True)
+            seniority = soup.find(
+                "span",
+                class_="description__job-criteria-text--criteria")
+            if seniority:
+                job.seniority = seniority.get_text(strip=True)
 
-        job.employment_type = soup.find_all(
-            "span",
-            class_="description__job-criteria-text--criteria"
-            )[1].get_text(strip=True)
+            job_criteria = soup.find_all(
+                "span",
+                class_="description__job-criteria-text--criteria"
+                )
+            if not job_criteria:
+                continue
 
-        job.job_function = soup.find_all(
-            "span",
-            class_="description__job-criteria-text--criteria"
-            )[2].get_text(strip=True)
+            job_criteria_l = len(job_criteria)
 
-        job.industries = soup.find_all(
-            "span",
-            class_="description__job-criteria-text--criteria"
-            )[3].get_text(strip=True)
+            job.employment_type = (
+                job_criteria[1].get_text(strip=True) if job_criteria_l >= 2
+                else None)
+            job.job_function = (
+                job_criteria[2].get_text(strip=True) if job_criteria_l >= 3
+                else None)
 
-        job_list.append(job)
+            job.industries = (
+                job_criteria[3].get_text(strip=True) if job_criteria_l >= 4
+                else None)
 
-        ids.add(job.job_id)
-        time.sleep(1)
+            job_list.append(job)
+            ids.add(job.job_id)
+            time.sleep(1)
+
+        except Exception as e:
+            logger.error(f"Error during `add_job_details`: {e}")
     return job_list, ids
 
 
 def find_new_jobs(params) -> tuple:
+    logger.info("Collecting new jobs.")
     jobs = collect_jobs_with_params(params)
     if not jobs:
         return [], set()
+    logger.info("Adding job details.")
     jobs, ids = add_job_details(jobs)
     return jobs, ids

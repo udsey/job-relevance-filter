@@ -94,6 +94,7 @@ class Config(BaseModel):
     relevance_threshold: Optional[float] = 0.7
     no_response_days: Optional[int] = 14
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
+    last_run: Optional[date] = None
 
 
 class LLMJobSummaryModel(BaseModel):

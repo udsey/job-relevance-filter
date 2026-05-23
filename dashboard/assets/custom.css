@@ -197,6 +197,7 @@ h3 {
 
 .no-jobs-card {
   align-items: center;
+  max-width: 100%;
 }
 
 

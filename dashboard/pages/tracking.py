@@ -247,7 +247,10 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
 def get_kanban_card(row) -> dbc.Card:
     return dbc.Card([
         dbc.CardHeader([
-            html.Small(row.job_title),
+            html.A(row.job_title,
+                   href=row.job_url,
+                   target="_blank",
+                   style={"textDecoration": "none"}),
             dbc.Button(
                 html.I(className="bi bi-journal-text"),
                 size="sm",
@@ -255,11 +258,7 @@ def get_kanban_card(row) -> dbc.Card:
                 className="kanban-note-btn",
                 id={"type": "kanban-note", "index": str(row.job_id)})]),
         dbc.CardBody([
-            html.Small([
-                row.company, " · ",
-                html.A("link", href=row.job_url, target="_blank",
-                       style={"textDecoration": "none"})
-            ], className="text-muted"),
+            html.Small([row.company], className="text-muted"),
         ]),
         dbc.CardFooter([
             dbc.Button(html.I(className="bi bi-arrow-left"),
