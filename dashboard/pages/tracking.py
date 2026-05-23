@@ -1,9 +1,7 @@
 """Overview."""
 from datetime import datetime
-import logging
 import os
 from typing import Any
-import uuid
 
 import dash
 from dash import ALL, Input, Output, State, callback, ctx, html, no_update
@@ -12,10 +10,9 @@ from dash import dash_table
 import pandas as pd
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-import plotly.express as px
 
 from dashboard.app import TABLE_STYLE
-from dashboard.components.utils import hex_to_rgba, rgb_to_rgba
+from dashboard.components.utils import rgb_to_rgba
 from src.setup import DATA_DIR, config
 import plotly.io as pio
 from dashboard.components.kpi import kpi_card
@@ -159,10 +156,8 @@ def get_table(df: pd.DataFrame) -> html.Div:
                         id="job-aplication-table",
                         data=df.to_dict("records"),
                         columns=[
-                            {"name": c,
-                            "id": c,
-                            "presentation": "markdown"} if c == "job_url"
-                            else {"name": c, "id": c}
+                            {"name": c, "id": c, "presentation": "markdown"}
+                            if c == "job_url" else {"name": c, "id": c}
                             for c in df.columns
                         ],
                         page_size=20,
@@ -240,9 +235,9 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
                 ], id=f"kanban-{stage}"),
                 dbc.CardFooter(
                     dbc.Button(html.I(className="bi bi-plus"),
-                       size="sm",
-                       className="kanban-add-btn",
-                       id={"type": "kanban-add", "index": stage}),
+                               size="sm",
+                               className="kanban-add-btn",
+                               id={"type": "kanban-add", "index": stage}),
                 ),
             ], className="kanban-card") for stage in STAGES
         ]),
@@ -263,7 +258,7 @@ def get_kanban_card(row) -> dbc.Card:
             html.Small([
                 row.company, " · ",
                 html.A("link", href=row.job_url, target="_blank",
-                    style={"textDecoration": "none"})
+                       style={"textDecoration": "none"})
             ], className="text-muted"),
         ]),
         dbc.CardFooter([

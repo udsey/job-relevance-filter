@@ -3,8 +3,7 @@
 
 __pycache__
 
-project-definition.md
-user_profile.yaml
-config.yaml
+configs/*
+data/*
 
 

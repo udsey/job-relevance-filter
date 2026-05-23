@@ -8,8 +8,8 @@ import plotly.express as px
 
 import plotly.io as pio
 
-# from src.scheduler import start_scheduler
-# start_scheduler()
+from src.scheduler import start_scheduler
+start_scheduler()
 
 pio.templates["custom"] = pio.templates["plotly_dark"]
 pio.templates["custom"].layout.colorway = px.colors.qualitative.Prism
