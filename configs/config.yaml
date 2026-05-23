@@ -1,5 +1,6 @@
 cron: 0 9 * * *
 last_run: 2026-05-23
+last_sync: '2026-05-24 02:50:30.510641'
 llm_config:
   extract_user_profile_prompt: "You are a professional resume parser. Extract structured\
     \ information from the resume below according to the exact JSON schema provided.\n\

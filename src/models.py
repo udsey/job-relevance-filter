@@ -95,6 +95,7 @@ class Config(BaseModel):
     no_response_days: Optional[int] = 14
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
     last_run: Optional[date] = None
+    last_sync: Optional[str] = None
 
 
 class LLMJobSummaryModel(BaseModel):
