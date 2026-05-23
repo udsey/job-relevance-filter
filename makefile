@@ -2,8 +2,11 @@
 
 help:
 	@echo "Available commands:"
-	@echo "  make run    	 	- Run search"
-	@echo "  make dashboard 	- Open dashboard"
+	@echo "  make run          - Run the job relevance search"
+	@echo "  make dashboard    - Open the dashboard UI"
+	@echo "  make docker-up    - Start Docker containers (build, detached)"
+	@echo "  make docker-logs  - Follow Docker container logs"
+	@echo "  make docker-down  - Stop Docker containers"
 
 
 run:
