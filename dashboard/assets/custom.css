@@ -16,13 +16,13 @@ button:is(.first-page, .previous-page, .next-page, .last-page) {
 
 .dash-table-container .previous-next-container .page-number .current-page-container .current-page-shadow,
 .dash-table-container .previous-next-container .page-number .current-page-container input.current-page {
-  border-bottom: none !important;
+  border: none !important;
 }
 
 
 .dash-table-container .previous-next-container .page-number .current-page-container input.current-page {
   width: 20%;
-  border: none !important
+  border: none !important;
 }
 
 .current-page-container input {
