@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from apscheduler.triggers.date import DateTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import logging
@@ -19,6 +20,7 @@ def start_scheduler() -> None:
     cron_hour = int(cron.split()[1])
     last_run = config.last_run
 
+
     if last_run != date.today() and datetime.now().hour > cron_hour:
         logger.info("Missed today's run, executing now")
-        run()
+        scheduler.add_job(run, DateTrigger(run_date=datetime.now()))

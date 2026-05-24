@@ -364,15 +364,15 @@ h3 {
 .kanban-btn-reject {
     padding: 0;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     cursor: pointer;
     font-size: 20px;
     transition: opacity 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 100% !important;
+    border-radius: 5px;
     background-color: var(--bs-secondary) !important;
 }
 
@@ -553,4 +553,10 @@ input:focus,
   margin-bottom: 20px;
   border: 1px solid var(--bs-info);
   border-radius: 6px;
+}
+
+.kanban-card-filter {
+  height: 25px;
+  width: 100%;
+  margin: none
 }

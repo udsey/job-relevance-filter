@@ -17,7 +17,7 @@ from src.setup import DATA_DIR, config
 import plotly.io as pio
 from dashboard.components.kpi import kpi_card
 
-PATH = "/tracking"
+PATH = "/jobs-tracker"
 dash.register_page(__name__, path=PATH)
 
 filepath = os.path.join(DATA_DIR, "jobs.csv")
@@ -142,7 +142,7 @@ def get_no_applications_card() -> dbc.Card:
         dbc.CardBody([
             html.H2("You haven't applied to any jobs yet",
                     className="card-text"),
-            dbc.CardImg(src="assets/no_applications.jpg", bottom=True),
+            dbc.CardImg(src="imgs/no_applications.jpg", bottom=True),
             ])
     ], className="no-jobs-card")
 
@@ -249,7 +249,15 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
     return html.Div([
         dbc.Row([
             dbc.Card([
-                dbc.CardHeader(stage.capitalize()),
+                dbc.CardHeader([
+                    dbc.Row([
+                        dbc.Col(stage.capitalize(), width="auto"),
+                        dbc.Col(dcc.Input(id=f"kanban-{stage}-card-filter",
+                                        className="kanban-card-filter",
+                                        type="search",
+                                        placeholder="Search"))
+                    ]),
+                    ]),
                 dbc.CardBody([
                     get_kanban_card(row)
                     for _, row in df[df.response_status == stage].iterrows()
@@ -452,3 +460,25 @@ def on_add_job_close(is_open, stage, title,
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     df.to_csv(filepath, index=False)
     return PATH
+
+
+for stage in STAGES:
+    @callback(
+        Output(f"kanban-{stage}", "children"),
+        Input(f"kanban-{stage}-card-filter", "value"),
+        prevent_initial_call=True
+    )
+    def filter_cards(search, stage=stage) -> list:
+        df = read_jobs_csv()
+        if df is None:
+            return []
+        job_table = get_job_table(df)
+        filtered = job_table[job_table.response_status == stage]
+        if search:
+            mask = filtered.apply(
+                lambda row: row.astype(str).str.contains(
+                    search, case=False, na=False).any(),
+                axis=1
+            )
+            filtered = filtered[mask]
+        return [get_kanban_card(row) for _, row in filtered.iterrows()]

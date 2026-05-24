@@ -142,7 +142,7 @@ def get_empty_page() -> html.Div:
         html.H3("No jobs found yet"),
         dbc.Card([
             dbc.CardBody(text),
-            dbc.CardImg(src="assets/empty_overview.jpg", bottom=True),
+            dbc.CardImg(src="imgs/empty_overview.jpg", bottom=True),
         ])
     ])
 

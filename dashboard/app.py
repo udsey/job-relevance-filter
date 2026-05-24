@@ -59,7 +59,7 @@ app.layout = dbc.Container([
         children=[
             dbc.NavItem(dbc.NavLink("Overview", href="/")),
             dbc.NavItem(dbc.NavLink("Jobs", href="/jobs")),
-            dbc.NavItem(dbc.NavLink("Jobs Tracking", href="/tracking")),
+            dbc.NavItem(dbc.NavLink("Job Tracker", href="/jobs-tracker")),
             dbc.NavItem(dbc.NavLink("Match Job", href="/match-job")),
             dbc.NavItem(dbc.NavLink("Criteria & Profile", href="/profile")),
         ],

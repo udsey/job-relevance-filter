@@ -159,7 +159,7 @@ def get_no_jobs_card() -> dbc.Card:
     return dbc.Card([
         dbc.CardBody([
             html.H2("No more jobs", className="card-text"),
-            dbc.CardImg(src="assets/no_more_jobs.jpg", bottom=True),
+            dbc.CardImg(src="imgs/no_more_jobs.jpg", bottom=True),
             ])
     ], className="no-jobs-card")
 
