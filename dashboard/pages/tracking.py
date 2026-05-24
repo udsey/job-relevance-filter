@@ -142,7 +142,7 @@ def get_no_applications_card() -> dbc.Card:
         dbc.CardBody([
             html.H2("You haven't applied to any jobs yet",
                     className="card-text"),
-            dbc.CardImg(src="imgs/no_applications.jpg", bottom=True),
+            dbc.CardImg(src="/static/images/no_applications.jpg", bottom=True),
             ])
     ], className="no-jobs-card")
 
@@ -175,9 +175,8 @@ def get_kpis(kpis: dict) -> html.Div:
             kpi_card("Total Applied", kpis["applied"]),
             kpi_card("Response Rate", f"{kpis['response_rate']:.0%}"),
             kpi_card("Interview Rate", f"{kpis['interview_rate']:.0%}"),
-            kpi_card(
-                "Average days to response",
-                f"{kpis['avg_days_to_response']:.0%}"),
+            kpi_card("Average days to response",
+                     f"{kpis['avg_days_to_response']:.0f}d"),
         ]),
         ], className="kpi-body")
 
@@ -202,11 +201,20 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
             return "Screened"
         return "Applied"
 
+    def get_rejected_stage(row) -> str:
+        if pd.notna(row["interview_at"]):
+            return "Interview"
+        if pd.notna(row["screened_at"]):
+            return "Screened"
+        return "Applied"
+
     df["_status"] = df.apply(get_status, axis=1)
     df["_nr_stage"] = df.apply(get_no_response_stage, axis=1)
+    df["_rejected_stage"] = df.apply(get_rejected_stage, axis=1)
+    rejected = df[df["_status"] == "rejected"]
 
     no_resp = df[df["_status"] == "no_response"]
-    active = df[df["_status"] != "no_response"]
+    active = df[~df["_status"].isin(["no_response", "rejected"])]
 
     add("Applied", "No Response",
         (no_resp["_nr_stage"] == "Applied").sum())
@@ -214,16 +222,21 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
         (active["_status"] == "applied").sum())
     add("Applied", "Screened",
         (active["_status"].isin(
-            ["screened", "interview", "offered", "rejected"])).sum()
-        + (no_resp["_nr_stage"].isin(["Screened", "Interview"])).sum())
+            ["screened", "interview", "offered"])).sum()
+        + (no_resp["_nr_stage"].isin(["Screened", "Interview"])).sum()
+        + (rejected["_rejected_stage"].isin(["Screened", "Interview"])).sum())
+    add("Applied", "Rejected",
+        (rejected["_rejected_stage"] == "Applied").sum())
     add("Screened", "No Response",
         (no_resp["_nr_stage"] == "Screened").sum())
     add("Screened", "Pending",
         (active["_status"] == "screened").sum())
     add("Screened", "Interview",
-        (active["_status"].isin(
-            ["interview", "offered", "rejected"])).sum()
-        + (no_resp["_nr_stage"] == "Interview").sum())
+        (active["_status"].isin(["interview", "offered"])).sum()
+        + (no_resp["_nr_stage"] == "Interview").sum()
+        + (rejected["_rejected_stage"] == "Interview").sum())
+    add("Screened", "Rejected",
+        (rejected["_rejected_stage"] == "Screened").sum())
     add("Interview", "No Response",
         (no_resp["_nr_stage"] == "Interview").sum())
     add("Interview", "Pending",
@@ -231,7 +244,7 @@ def get_sankey(df: pd.DataFrame) -> dcc.Graph:
     add("Interview", "Offered",
         (active["_status"] == "offered").sum())
     add("Interview", "Rejected",
-        (active["_status"] == "rejected").sum())
+        (rejected["_rejected_stage"] == "Interview").sum())
 
     colors = pio.templates["custom"].layout.colorway
     node_colors = [rgb_to_rgba(c, alpha=0.4) for c in colors[:len(labels)]]

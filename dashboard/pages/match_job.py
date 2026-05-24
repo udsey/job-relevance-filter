@@ -41,7 +41,7 @@ def get_empty_page() -> html.Div:
         dbc.Card([
             html.H3("Please create profile first."),
             dbc.CardBody(text),
-            dbc.CardImg(src="imgs/empty_match.jpg", bottom=True),
+            dbc.CardImg(src="/static/images/empty_match.jpg", bottom=True),
         ])
     ])
 

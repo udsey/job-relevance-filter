@@ -14,8 +14,10 @@ import plotly.express as px
 
 import plotly.io as pio
 import logging
+from src.parser import match_job_from_description
 from src.scheduler import start_scheduler
 from src.setup import DATA_DIR, config, save_config
+from src.utils import load_existing_profile
 
 logging.basicConfig(level=logging.INFO)
 
@@ -94,6 +96,7 @@ def last_sync() -> tuple:
 def sync_jobs() -> tuple:
     data_filepath = os.path.join(DATA_DIR, "jobs.csv")
     jobs = request.json
+    logging.info(f"Sync request: {jobs}")
     new_df = pd.DataFrame(jobs)
     new_df["status"] = "applied"
     new_df["created_at"] = pd.to_datetime(
@@ -127,3 +130,31 @@ def sync_jobs() -> tuple:
 
     return {"status": "ok", "added": added,
             "skipped": len(jobs) - added}, 200
+
+
+@server.route("/api/match-job", methods=["POST"])
+def get_match() -> tuple:
+    job_description = request.json
+    logging.info(f"Job recieved: {job_description[:50]}...")
+    if not job_description:
+        return {"status": "error", "message": "Empty job description"}, 400
+
+    profile = load_existing_profile()
+    if (profile is None or not any(
+                profile.model_dump(exclude={"years_of_experience"}).values())):
+        return {"status": "error",
+                "message": "No profile found to match"}, 404
+    try:
+        result, summary = match_job_from_description(
+            job_description=job_description,
+            user_profile=profile)
+        return {
+            "status": "ok",
+            "job_summary": summary.job_summary,
+            "relevance_score": result.relevance_score,
+            "matching_skills": result.matching_skills,
+            "missing_requirements": result.missing_requirements
+        }, 200
+    except Exception as e:
+        return {"status": "error",
+                "message": f"Matching failed: {e}"}, 500

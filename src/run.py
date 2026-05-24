@@ -65,6 +65,7 @@ def run() -> None:
             fail_runs += 1
             continue
 
-        if fail_runs != len(criteria):
-            config.last_run = datetime.now()
-            save_config(config)
+    if fail_runs != len(criteria):
+        config.last_run = datetime.now()
+        logging.info(f"Updating last_run with {config.last_run}")
+        save_config(config)
