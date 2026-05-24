@@ -22,7 +22,16 @@ An autonomous job search assistant that scrapes LinkedIn for job postings and us
 - 🔍 **Scrapes LinkedIn Jobs** across multiple keyword + location combinations
 - 📄 **Extracts your profile** from a PDF CV using an LLM
 - 🤖 **Matches jobs to your profile** with relevance score, confidence level, and reasoning
+- 📋 **One-at-a-time job review** — accept, skip, or remove jobs from a card-based review queue
+- 🎯 **On-demand job matching** — paste any job description and get an instant relevance score, matching skills, and missing requirements against your profile
+- 📈 **Application tracking** — Kanban board with drag-through stages (Applied → Screened → Interview → Offered), Sankey funnel diagram, and notes per application
+- 🏷️ **Tag-based profile editing** — add/remove skills, job titles, certifications, and search criteria as interactive tags
+- 📄 **CV upload & parsing** — drag-and-drop resume upload, LLM-powered profile extraction, and re-generation
 - ⚙️ **Flexible LLM backend** — supports local Ollama models, Groq API, or DeepSeek API
+- ⏰ **Scheduled scraping** — configurable cron-based auto-scraping
+- 🚀 **Run pipeline on demand** — trigger the find-and-match pipeline from the dashboard with a single click
+- 📉 **Rich analytics** — KPI cards, trend charts, score distributions, company breakdowns, and funnel analytics
+- 🔌 **Firefox Extension API** — REST endpoints consumed by the [companion LinkedIn Extension](https://github.com/udsey/linkedin-extension) for auto-syncing applied jobs and on-page matching
 - 🐳 **Docker support** — run the full stack with a single command
 
 ## Requirements
@@ -74,6 +83,16 @@ Opens at `http://localhost:8050`. From the dashboard you can:
 - **Match Job** — paste a job description and get an instant relevance score, matching skills, and missing requirements against your profile
 - **Tracking** — Kanban board and funnel chart to manage applications
 
+### Firefox Extension integration
+
+The dashboard provides a REST API consumed by the [LinkedIn Job Tracker Extension](https://github.com/udsey/linkedin-extension) — a Firefox WebExtension that scrapes LinkedIn job postings, listens for job applications, and matches jobs against your CV from within the browser.
+
+| Endpoint | Method | Used by extension | Description |
+|---|---|---|---|
+| `/api/last-sync` | GET | `background.js`, `utils.js` | Returns the last sync timestamp; the extension uses this to decide whether a daily sync is needed |
+| `/api/sync-jobs` | POST | `sync_apply.js`, `sync_applied.js` | Syncs job postings, deduplicating by `job_id` |
+| `/api/match-job` | POST | `match_job.js` | Matches a job description against your profile; returns scoring, matching skills, missing requirements, and summary |
+
 ### Other commands
 
 | Command | Description |
@@ -124,7 +143,7 @@ search_parameters:
 
 ## Output
 
-Results are saved to `data/jobs.csv` with the following match columns:
+Results are saved to `data/jobs.csv` with the following columns:
 
 | Column | Description |
 |---|---|
@@ -137,6 +156,7 @@ Results are saved to `data/jobs.csv` with the following match columns:
 | `job_summary` | Concise human-friendly job summary |
 | `status` | `new`, `applied`, `interviewing`, etc. |
 | `created_at` | Timestamp when the match was created |
+| `notes` | Free-text notes per application |
 
 ## Docker
 
@@ -151,9 +171,11 @@ make docker-down     # Stop
 ```
 ├── configs/            # YAML configuration files
 ├── dashboard/          # Dash web application (primary UI)
-│   ├── app.py          # App entry point
-│   ├── components/     # Reusable UI components
-│   └── pages/          # Page layouts
+│   ├── app.py          # App entry point, layout, navbar, API routes
+│   ├── assets/         # Static assets (CSS, JS, images, favicon)
+│   ├── components/     # Reusable UI components (KPI cards, utilities)
+│   ├── pages/          # Page layouts
+│   └── static/         # Static images (empty states)
 ├── data/               # Output data (jobs.csv)
 ├── src/                # Core application code
 │   ├── run.py          # Main pipeline orchestration
@@ -166,4 +188,3 @@ make docker-down     # Stop
 ├── Dockerfile          # Container build
 ├── docker-compose.yml  # Multi-service setup
 └── makefile            # Convenience targets
-```
