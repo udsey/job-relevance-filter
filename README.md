@@ -12,26 +12,40 @@
   <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff" alt="Docker">
 </p>
 
-An autonomous job search assistant that scrapes LinkedIn for job postings and uses an LLM to match them against your CV — scoring each role by relevance, confidence, and fit. All operations are managed through an interactive Dash dashboard.
+A Dash-based job search dashboard that scrapes LinkedIn (via its guest API), uses an LLM to
+match postings against your CV, and lets you manage the entire workflow from a single UI.
 
 ---
 
 ## Features
 
-- 📊 **Interactive Dashboard** — browser-based UI for managing your entire job search
-- 🔍 **Scrapes LinkedIn Jobs** across multiple keyword + location combinations
-- 📄 **Extracts your profile** from a PDF CV using an LLM
-- 🤖 **Matches jobs to your profile** with relevance score, confidence level, and reasoning
-- 📋 **One-at-a-time job review** — accept, skip, or remove jobs from a card-based review queue
-- 🎯 **On-demand job matching** — paste any job description and get an instant relevance score, matching skills, and missing requirements against your profile
-- 📈 **Application tracking** — Kanban board with drag-through stages (Applied → Screened → Interview → Offered), Sankey funnel diagram, and notes per application
-- 🏷️ **Tag-based profile editing** — add/remove skills, job titles, certifications, and search criteria as interactive tags
-- 📄 **CV upload & parsing** — drag-and-drop resume upload, LLM-powered profile extraction, and re-generation
+- 📊 **Dashboard-first workflow** — all operations (search, review, match, track) are
+  performed through a browser-based Dash application
+- 🔍 **LinkedIn scraping** — calls LinkedIn's guest jobs API, parses HTML with BeautifulSoup
+  across keyword + location combinations defined in search criteria
+- 📄 **CV parsing** — extracts a structured profile from your PDF resume using `pdfplumber`
+  + an LLM, stored as `configs/profile.yaml`
+- 🤖 **LLM job matching** — LangChain-powered agent that evaluates each job against your
+  profile and returns a relevance score (0.0–1.0), confidence level, matching skills,
+  missing requirements, and a recommendation
+- 📋 **Card-based review queue** — one-at-a-time job cards where you accept, skip, or
+  remove jobs; accepted jobs move to tracking
+- 🎯 **On-demand matching** — paste any job description for an instant relevance score
+  against your profile
+- 📈 **Application tracking** — Kanban board with drag-through stages
+  (Applied → Screened → Interview → Offered), Sankey funnel diagram, and per-application notes
+- 🏷️ **Tag-based profile editing** — add/remove skills, job titles, certifications,
+  and search criteria as interactive tags
 - ⚙️ **Flexible LLM backend** — supports local Ollama models, Groq API, or DeepSeek API
-- ⏰ **Scheduled scraping** — configurable cron-based auto-scraping
-- 🚀 **Run pipeline on demand** — trigger the find-and-match pipeline from the dashboard with a single click
-- 📉 **Rich analytics** — KPI cards, trend charts, score distributions, company breakdowns, and funnel analytics
-- 🔌 **Firefox Extension API** — REST endpoints consumed by the [companion LinkedIn Extension](https://github.com/udsey/linkedin-extension) for auto-syncing applied jobs and on-page matching
+- ⏰ **Scheduled scraping** — configurable cron-based auto-scraping via APScheduler,
+  with a catch-up run if today's schedule was missed
+- 🚀 **Run pipeline on demand** — trigger the find-and-match pipeline from the dashboard
+  Overview page with a single click
+- 📉 **Rich analytics** — KPI cards, trend charts, score distributions, company breakdowns,
+  seniority/employment type breakdowns, and Sankey funnel analytics
+- 🔌 **Firefox Extension API** — REST endpoints consumed by the
+  [companion LinkedIn Extension](https://github.com/udsey/linkedin-extension) for
+  auto-syncing applied jobs and on-page matching
 - 🐳 **Docker support** — run the full stack with a single command
 
 ## Requirements
@@ -75,17 +89,25 @@ Launch the dashboard to manage your job search from a single UI:
 make dashboard
 ```
 
-Opens at `http://localhost:8050`. From the dashboard you can:
+Opens at `http://localhost:8050`. The dashboard starts a background scheduler that
+automatically runs the find-and-match pipeline on a cron schedule.
 
-- **Overview** — KPI cards, charts, and data table of all jobs
-- **Jobs** — one-at-a-time job review with accept / skip / remove
-- **Profile** — search criteria form and LLM-powered profile extraction from PDF
-- **Match Job** — paste a job description and get an instant relevance score, matching skills, and missing requirements against your profile
-- **Tracking** — Kanban board and funnel chart to manage applications
+#### Pages
+
+| Page | Route | Description |
+|---|---|---|
+| **Overview** | `/` | KPI cards, trend charts, score distributions, company/seniority breakdowns, filterable job table, and a "Run now" button to trigger the pipeline ad-hoc |
+| **Jobs** | `/jobs` | One-at-a-time job review with accept / skip / remove actions |
+| **Job Tracker** | `/jobs-tracker` | Kanban board (Applied → Screened → Interview → Offered), Sankey funnel chart, per-job notes, manual job addition, and a filterable table |
+| **Match Job** | `/match-job` | Paste a job description and get an instant relevance score, matching skills, missing requirements, and summary |
+| **Criteria & Profile** | `/profile` | Search criteria form (keyword, location, time posted, experience level, job type, work type), LLM-powered profile extraction from PDF upload, and tag-based profile editing |
 
 ### Firefox Extension integration
 
-The dashboard provides a REST API consumed by the [LinkedIn Job Tracker Extension](https://github.com/udsey/linkedin-extension) — a Firefox WebExtension that scrapes LinkedIn job postings, listens for job applications, and matches jobs against your CV from within the browser.
+The dashboard provides a REST API consumed by the
+[LinkedIn Job Tracker Extension](https://github.com/udsey/linkedin-extension)
+— a Firefox WebExtension that scrapes LinkedIn job postings, listens for job applications,
+and matches jobs against your CV from within the browser.
 
 | Endpoint | Method | Used by extension | Description |
 |---|---|---|---|
@@ -97,8 +119,8 @@ The dashboard provides a REST API consumed by the [LinkedIn Job Tracker Extensio
 
 | Command | Description |
 |---|---|
-| `make run` | Run the full find-and-match pipeline headlessly |
 | `make dashboard` | Launch the interactive dashboard |
+| `make run` | Run the full find-and-match pipeline headlessly (no scheduler, no UI) |
 | `make docker-up` | Start all services with Docker Compose (build, detached) |
 | `make docker-logs` | Follow container logs |
 | `make docker-down` | Stop all containers |
@@ -147,16 +169,27 @@ Results are saved to `data/jobs.csv` with the following columns:
 
 | Column | Description |
 |---|---|
+| `job_id` | LinkedIn job ID |
+| `job_title` | Job title from the listing |
+| `company` | Company name |
+| `location` | Job location |
+| `job_url` | Link to the LinkedIn posting |
+| `posted_time` | When the job was posted |
+| `description` | Full job description |
+| `seniority` | Seniority level |
+| `employment_type` | Full-time, part-time, contract, etc. |
+| `easy_apply` | Whether LinkedIn Easy Apply is available |
+| `job_summary` | LLM-generated concise summary |
 | `relevance_score` | 0.0–1.0 fit score |
 | `confidence_level` | LLM certainty in the assessment |
-| `reason` | Detailed explanation |
+| `reason` | Detailed explanation of the match |
 | `matching_skills` | Skills from your profile that match |
 | `missing_requirements` | Gaps identified |
-| `recommendation` | Suggested next step |
-| `job_summary` | Concise human-friendly job summary |
-| `status` | `new`, `applied`, `interviewing`, etc. |
-| `created_at` | Timestamp when the match was created |
+| `recommendation` | INTERVIEW / CONSIDER / REJECT / NEED_MORE_INFO |
+| `status` | `new`, `seen`, `removed`, `applied`, etc. |
+| `applied_at` / `screened_at` / `interview_at` / `offered_at` / `rejected_at` | Stage timestamps |
 | `notes` | Free-text notes per application |
+| `created_at` | Timestamp when the match was created |
 
 ## Docker
 
@@ -169,22 +202,22 @@ make docker-down     # Stop
 ## Project structure
 
 ```
-├── configs/            # YAML configuration files
-├── dashboard/          # Dash web application (primary UI)
-│   ├── app.py          # App entry point, layout, navbar, API routes
+├── configs/            # YAML configuration files (config.yaml, criteria.yaml, profile.yaml)
+├── dashboard/          # Dash web application (primary interface)
+│   ├── app.py          # App entry point, layout, navbar, API routes, scheduler init
 │   ├── assets/         # Static assets (CSS, JS, images, favicon)
 │   ├── components/     # Reusable UI components (KPI cards, utilities)
-│   ├── pages/          # Page layouts
+│   ├── pages/          # Page layouts (Overview, Jobs, Job Tracker, Match Job, Profile)
 │   └── static/         # Static images (empty states)
 ├── data/               # Output data (jobs.csv)
-├── src/                # Core application code
-│   ├── run.py          # Main pipeline orchestration
-│   ├── scraper.py      # LinkedIn job scraping
-│   ├── parser.py       # LLM-based job matching & profile extraction
-│   ├── models.py       # Pydantic data models
-│   ├── scheduler.py    # Cron-based job scheduler
-│   ├── setup.py        # Config loading & initialization
-│   └── utils.py        # Utility functions
+├── src/                # Core library (imported and orchestrated by the dashboard)
+│   ├── run.py          # Pipeline orchestration: scrape → summarise → match → save
+│   ├── scraper.py      # LinkedIn guest API scraping via requests + BeautifulSoup
+│   ├── parser.py       # LLM-based job matching, summary extraction, and profile extraction
+│   ├── models.py       # Pydantic data models for configs, jobs, matches, profiles
+│   ├── scheduler.py    # APScheduler-based cron runner with catch-up logic
+│   ├── setup.py        # Config loading, directory setup, logging init
+│   └── utils.py        # YAML i/o helpers and path checks
 ├── Dockerfile          # Container build
 ├── docker-compose.yml  # Multi-service setup
-└── makefile            # Convenience targets
+└── makefile            # Convenience targets (dashboard, run, docker-*)
