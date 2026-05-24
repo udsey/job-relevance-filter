@@ -183,7 +183,7 @@ def get_kpis(kpis: dict) -> html.Div:
 
 def get_sankey(df: pd.DataFrame) -> dcc.Graph:
     labels = ["Applied", "Screened", "Interview",
-          "Offered", "Rejected", "No Response", "Pending"]
+              "Offered", "Rejected", "No Response", "Pending"]
     idx = {le: i for i, le in enumerate(labels)}
 
     sources, targets, values = [], [], []
@@ -266,9 +266,9 @@ def get_kanban(df: pd.DataFrame) -> html.Div:
                     dbc.Row([
                         dbc.Col(stage.capitalize(), width="auto"),
                         dbc.Col(dcc.Input(id=f"kanban-{stage}-card-filter",
-                                        className="kanban-card-filter",
-                                        type="search",
-                                        placeholder="Search"))
+                                          className="kanban-card-filter",
+                                          type="search",
+                                          placeholder="Search"))
                     ]),
                     ]),
                 dbc.CardBody([

@@ -20,8 +20,7 @@ def start_scheduler() -> None:
     cron_hour = int(cron.split()[1])
     last_run = config.last_run
 
-
     if ((not last_run or last_run.date() != date.today())
-        and datetime.now().hour > cron_hour):
+            and datetime.now().hour > cron_hour):
         logger.info("Missed today's run, executing now")
         scheduler.add_job(run, DateTrigger(run_date=datetime.now()))

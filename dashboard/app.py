@@ -96,7 +96,7 @@ def last_sync() -> tuple:
 def sync_jobs() -> tuple:
     data_filepath = os.path.join(DATA_DIR, "jobs.csv")
     jobs = request.json
-    logging.info(f"Sync request: {jobs}")
+    logging.info("Job sync requested.")
     new_df = pd.DataFrame(jobs)
     new_df["status"] = "applied"
     new_df["created_at"] = pd.to_datetime(
@@ -127,7 +127,7 @@ def sync_jobs() -> tuple:
 
     config.last_sync = str(datetime.now())
     save_config(config)
-
+    logging.info("Job Sync done.")
     return {"status": "ok", "added": added,
             "skipped": len(jobs) - added}, 200
 
@@ -135,7 +135,7 @@ def sync_jobs() -> tuple:
 @server.route("/api/match-job", methods=["POST"])
 def get_match() -> tuple:
     job_description = request.json
-    logging.info(f"Job recieved: {job_description[:50]}...")
+    logging.info("Match Job requested.")
     if not job_description:
         return {"status": "error", "message": "Empty job description"}, 400
 
@@ -148,6 +148,7 @@ def get_match() -> tuple:
         result, summary = match_job_from_description(
             job_description=job_description,
             user_profile=profile)
+        logging.info("Match job done.")
         return {
             "status": "ok",
             "job_summary": summary.job_summary,

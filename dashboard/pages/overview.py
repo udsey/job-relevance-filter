@@ -293,6 +293,7 @@ def show_cell(active_cell, data) -> tuple:
     value = data[active_cell["row"]][active_cell["column_id"]]
     return True, str(value)
 
+
 @callback(
     Output("run-now-btn", "disabled"),
     Output("run-btn-icon", "className"),
