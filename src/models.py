@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -94,7 +94,7 @@ class Config(BaseModel):
     relevance_threshold: Optional[float] = 0.7
     no_response_days: Optional[int] = 14
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
-    last_run: Optional[date] = None
+    last_run: Optional[datetime] = None
     last_sync: Optional[str] = None
 
 

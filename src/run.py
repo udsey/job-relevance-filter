@@ -1,6 +1,6 @@
 """Run."""
 
-from datetime import date
+from datetime import datetime
 import logging
 import os
 
@@ -66,5 +66,5 @@ def run() -> None:
             continue
 
         if fail_runs != len(criteria):
-            config.last_run = date.today()
+            config.last_run = datetime.now()
             save_config(config)

@@ -560,3 +560,22 @@ input:focus,
   width: 100%;
   margin: none
 }
+
+.run-panel {
+  background-color: transparent;
+  border: 1px solid var(--bs-info) !important;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.run-panel-btn {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  padding: 2px 8px;
+}

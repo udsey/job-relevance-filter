@@ -1,16 +1,19 @@
 """Overview."""
+from datetime import datetime
 import os
 
 import dash
-from dash import Input, Output, State, callback, html
+from dash import Input, Output, State, callback, html, no_update
 from dash import dcc
 from dash import dash_table
 import pandas as pd
 import dash_bootstrap_components as dbc
 import plotly.express as px
-
+from src.scheduler import scheduler
+from apscheduler.triggers.date import DateTrigger
+from src.run import run
 from dashboard.app import TABLE_STYLE
-from src.setup import CONFIG_DIR, DATA_DIR, config
+from src.setup import CONFIG_DIR, DATA_DIR, config, load_config
 from src.utils import load_existing_criteria, load_existing_profile
 from dashboard.components.kpi import kpi_card
 
@@ -86,9 +89,12 @@ def layout() -> html.Div:
     chart_data = get_chart_data(df)
 
     return html.Div([
+        get_run_panel(),
         get_kpis(kpis),
         get_charts(chart_data),
         get_table(df),
+        dcc.Store(id="run-started-store"),
+        dcc.Interval(id="run-poll-interval", interval=2000, disabled=True),
         dbc.Modal([dbc.ModalBody(id="cell-modal-body"),], id="cell-modal"),
     ])
 
@@ -161,6 +167,31 @@ def get_table(df) -> dash_table:
                     filter_action="native",
                     **TABLE_STYLE
                 )
+
+
+def get_run_panel() -> html.Div:
+    config = load_config()
+    if config.last_run:
+        last_run_text = config.last_run.strftime("%b %d, %Y %H:%M")
+    else:
+        last_run_text = "Never"
+
+    return html.Div([
+        html.Span(
+            html.I(className="bi bi-clock-history"),
+            className="run-panel-icon"
+        ),
+        html.Span(f"Last run: {last_run_text}",
+                  id="run-last-run-text",
+                  className="run-panel-text"),
+        dbc.Button(
+            html.I(className="bi bi-play-fill", id="run-btn-icon"),
+            id="run-now-btn",
+            size="sm",
+            className="run-panel-btn",
+            title="Run now"
+        ),
+    ], className="run-panel")
 
 
 def get_kpis(kpis) -> html.Div:
@@ -261,3 +292,35 @@ def show_cell(active_cell, data) -> tuple:
         return False, None
     value = data[active_cell["row"]][active_cell["column_id"]]
     return True, str(value)
+
+@callback(
+    Output("run-now-btn", "disabled"),
+    Output("run-btn-icon", "className"),
+    Output("run-poll-interval", "disabled"),
+    Output("run-started-store", "data"),
+    Input("run-now-btn", "n_clicks"),
+    prevent_initial_call=True
+)
+def on_run_now(n_clicks) -> tuple:
+    scheduler.add_job(run, DateTrigger(run_date=datetime.now()))
+    current = load_config().last_run
+    return True, "bi bi-arrow-repeat spin", False, str(current)
+
+
+@callback(
+    Output("run-now-btn", "disabled", allow_duplicate=True),
+    Output("run-btn-icon", "className", allow_duplicate=True),
+    Output("run-poll-interval", "disabled", allow_duplicate=True),
+    Output("run-last-run-text", "children"),
+    Input("run-poll-interval", "n_intervals"),
+    State("run-started-store", "data"),
+    prevent_initial_call=True
+)
+def poll_run_status(n_intervals, started_value) -> tuple:
+    current = load_config().last_run
+    if str(current) == started_value:
+        return no_update, no_update, no_update, no_update
+
+    last_run_text = (current.strftime("%b %d, %Y %H:%M")
+                     if current else "Never")
+    return False, "bi bi-play-fill", True, f"Last run: {last_run_text}"
