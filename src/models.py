@@ -96,6 +96,7 @@ class Config(BaseModel):
     llm_config: Optional[LLMConfigModel] = LLMConfigModel()
     last_run: Optional[datetime] = None
     last_sync: Optional[str] = None
+    dedup_threshold: Optional[float] = 0.95
 
 
 class LLMJobSummaryModel(BaseModel):
@@ -273,3 +274,18 @@ class LLMUserProfileModel(BaseModel):
         if self.first_experience_year is None:
             return None
         return date.today().year - self.first_experience_year
+
+
+class MemoryEntryModel(BaseModel):
+    """FAISS Memory Entry."""
+    id: str
+    category: str
+    content: str
+    created_at: str
+    score: Optional[float] = 0.0
+
+
+class AddEntryModel(BaseModel):
+    """FAISS Add Entry."""
+    category: str
+    content: str

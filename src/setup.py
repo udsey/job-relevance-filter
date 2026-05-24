@@ -35,6 +35,9 @@ logging.getLogger("WDM").setLevel(logging.WARNING)
 CONFIG_DIR = os.getcwd()
 DATA_DIR = os.path.join(CONFIG_DIR, 'data')
 CONFIG_DIR = os.path.join(CONFIG_DIR, 'configs')
+INDEX_PATH = os.path.join(DATA_DIR, "memory.faiss")
+META_PATH = os.path.join(DATA_DIR, "memory.pkl")
+
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(CONFIG_DIR, exist_ok=True)
 
