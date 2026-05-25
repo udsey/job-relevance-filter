@@ -5,7 +5,7 @@ from dash import Input, Output, State, callback, html, no_update
 from dash import dcc
 import dash_bootstrap_components as dbc
 
-from src.parser import match_job_from_description
+from src.agents import match_job_from_description
 from src.setup import CONFIG_DIR
 from src.utils import load_existing_profile
 

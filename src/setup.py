@@ -31,10 +31,16 @@ logging.basicConfig(
 )
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("WDM").setLevel(logging.WARNING)
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+logging.getLogger("faiss").setLevel(logging.WARNING)
+logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
 
 CONFIG_DIR = os.getcwd()
 DATA_DIR = os.path.join(CONFIG_DIR, 'data')
 CONFIG_DIR = os.path.join(CONFIG_DIR, 'configs')
+INDEX_PATH = os.path.join(DATA_DIR, "memory.faiss")
+META_PATH = os.path.join(DATA_DIR, "memory.pkl")
+
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(CONFIG_DIR, exist_ok=True)
 

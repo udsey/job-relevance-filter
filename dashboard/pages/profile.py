@@ -8,7 +8,7 @@ import json
 from src.utils import (save_to_config,
                        load_existing_criteria, load_existing_profile,
                        save_profile)
-from src.parser import create_user_profile
+from src.agents import create_user_profile
 
 dash.register_page(__name__, path="/profile")
 

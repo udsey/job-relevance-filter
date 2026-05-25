@@ -579,3 +579,48 @@ input:focus,
   height: 30px;
   padding: 2px 8px;
 }
+
+#memory-toolbar {
+  margin-top: 20px;
+  padding: 10px 20px 20px 20px;
+}
+
+#memory-wipe-btn {
+  width: 150px;
+  margin-right: 20px;
+  background-color: var(--bs-danger) !important;
+}
+
+#memory-delete-category-btn {
+  width: 50px;
+  background-color: var(--bs-danger) !important;
+  margin-right: 20px;
+}
+
+#memory-category-select {
+  background-color: var(--bg3);
+  color: var(--mono);
+  border: 1px solid var(--bs-danger);
+}
+
+#memory-category-select:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#memory-add-btn {
+  width: 50px;
+  height: 44px;
+  background-color: var(--bs-info) !important;
+
+}
+
+#memory-add-category {
+  height: 44px;
+  margin: 0;
+}
+
+#memory-add-content {
+  height: 44px;
+  margin: 0;
+}

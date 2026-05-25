@@ -11,7 +11,7 @@ import pandas as pd
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from dashboard.app import TABLE_STYLE
+from dashboard.styles import TABLE_STYLE
 from dashboard.components.utils import rgb_to_rgba
 from src.setup import DATA_DIR, config
 import plotly.io as pio
@@ -52,6 +52,9 @@ def read_jobs_csv() -> pd.DataFrame | None:
 
 def get_kpi_dict(df: pd.DataFrame):
     applied = df[df.status == "applied"]
+    today = pd.Timestamp.now().normalize()
+    applied_today = applied[
+        pd.to_datetime(applied["applied_at"]).dt.normalize() == today].shape[0]
     total_applied = applied.shape[0]
     responded = applied["screened_at"].notna().sum()
     interviewed = applied["interview_at"].notna().sum()
@@ -67,6 +70,7 @@ def get_kpi_dict(df: pd.DataFrame):
 
     return {
         "applied": total_applied,
+        "applied_today": applied_today,
         "response_rate": responded / (total_applied or 1e-6),
         "interview_rate": interviewed / (total_applied or 1e-6),
         "avg_days_to_response": avg_days_to_response
@@ -172,11 +176,10 @@ def get_table(df: pd.DataFrame) -> html.Div:
 def get_kpis(kpis: dict) -> html.Div:
     return html.Div([
         dbc.Row([
+            kpi_card("Applied Today", kpis["applied_today"]),
             kpi_card("Total Applied", kpis["applied"]),
             kpi_card("Response Rate", f"{kpis['response_rate']:.0%}"),
             kpi_card("Interview Rate", f"{kpis['interview_rate']:.0%}"),
-            kpi_card("Average days to response",
-                     f"{kpis['avg_days_to_response']:.0f}d"),
         ]),
         ], className="kpi-body")
 

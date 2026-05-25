@@ -86,6 +86,14 @@ class LLMConfigModel(BaseModel):
     match_job_prompt: Optional[str] = ""
     extract_user_profile_prompt: Optional[str] = ""
     job_summary_prompt: Optional[str] = ""
+    suggest_fill_prompt: Optional[str] = ""
+
+
+class MemoryConfigModel(BaseModel):
+    dedup_threshold: Optional[float] = 0.95
+    top_k: Optional[int] = 5
+    min_score: Optional[float] = 0.3
+    embedding_model: Optional[str] = "all-MiniLM-L6-v2"
 
 
 class Config(BaseModel):
@@ -93,9 +101,10 @@ class Config(BaseModel):
     cron: Optional[str] = "0 9 * * *"
     relevance_threshold: Optional[float] = 0.7
     no_response_days: Optional[int] = 14
-    llm_config: Optional[LLMConfigModel] = LLMConfigModel()
     last_run: Optional[datetime] = None
-    last_sync: Optional[str] = None
+    last_sync: Optional[datetime] = None
+    llm_config: Optional[LLMConfigModel] = LLMConfigModel()
+    memory_config: Optional[MemoryConfigModel] = MemoryConfigModel()
 
 
 class LLMJobSummaryModel(BaseModel):
@@ -116,6 +125,19 @@ class LLMJobSummaryModel(BaseModel):
         "It's a remote full-time role, likely targeting senior "
         "engineers based on the description.'"
         )
+
+
+class LLMSuggestFillModel(BaseModel):
+    suggestion: str = Field(
+        description="Suggested text to fill the form field, "
+                    "ready to use without any additional formatting "
+                    "or explanation."
+    )
+    confidence: float = Field(
+        description="Confidence score between 0.0 and 1.0 indicating how well "
+                    "the profile context matches the form field query. "
+                    "1.0 means highly confident, 0.0 means guessing."
+    )
 
 
 class LLMJobMatchModel(BaseModel):
@@ -273,3 +295,29 @@ class LLMUserProfileModel(BaseModel):
         if self.first_experience_year is None:
             return None
         return date.today().year - self.first_experience_year
+
+
+class MemoryEntryModel(BaseModel):
+    """FAISS Memory Entry."""
+    id: str
+    category: str
+    content: str
+    created_at: str
+    score: Optional[float] = 0.0
+    source: Optional[str] = "manual"
+    is_deleted: Optional[bool] = False
+
+
+class AddEntryModel(BaseModel):
+    """FAISS Add Entry."""
+    category: str
+    content: str
+    source: Optional[str] = "manual"
+
+
+class APIResponseModel(BaseModel):
+    """API Response Model."""
+    status: Optional[Literal["ok", "error"]] = "ok"
+    message: Optional[str] = None
+    payload: Optional[dict] = Field(default_factory=dict)
+    code: Optional[int] = 200

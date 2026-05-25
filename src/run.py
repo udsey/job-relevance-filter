@@ -6,7 +6,7 @@ import os
 
 import pandas as pd
 from src.models import LLMUserProfileModel, SearchCriteria
-from src.parser import match_jobs
+from src.agents import match_jobs
 from src.scraper import find_new_jobs
 from src.setup import CONFIG_DIR, DATA_DIR, config, save_config
 from src.utils import check_paths, load_yaml

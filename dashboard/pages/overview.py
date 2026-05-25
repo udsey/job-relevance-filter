@@ -4,6 +4,7 @@ import os
 
 import dash
 from dash import Input, Output, State, callback, html, no_update
+from croniter import croniter
 from dash import dcc
 from dash import dash_table
 import pandas as pd
@@ -12,7 +13,7 @@ import plotly.express as px
 from src.scheduler import scheduler
 from apscheduler.triggers.date import DateTrigger
 from src.run import run
-from dashboard.app import TABLE_STYLE
+from dashboard.styles import TABLE_STYLE
 from src.setup import CONFIG_DIR, DATA_DIR, config, load_config
 from src.utils import load_existing_criteria, load_existing_profile
 from dashboard.components.kpi import kpi_card
@@ -176,14 +177,18 @@ def get_run_panel() -> html.Div:
     else:
         last_run_text = "Never"
 
+    next_run = croniter(config.cron, datetime.now()).get_next(datetime)
+    hours_until = round((next_run - datetime.now()).total_seconds() / 3600, 1)
+
     return html.Div([
         html.Span(
             html.I(className="bi bi-clock-history"),
             className="run-panel-icon"
         ),
-        html.Span(f"Last run: {last_run_text}",
-                  id="run-last-run-text",
-                  className="run-panel-text"),
+        html.Span(
+            f"Last run: {last_run_text} · Next run in {hours_until} hours",
+            id="run-last-run-text",
+            className="run-panel-text"),
         dbc.Button(
             html.I(className="bi bi-play-fill", id="run-btn-icon"),
             id="run-now-btn",
