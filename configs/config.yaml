@@ -1,6 +1,6 @@
 cron: 0 0 * * *
 last_run: 2026-05-25 16:12:07.936685
-last_sync: '2026-05-25 17:02:32.978701'
+last_sync: '2026-05-25 21:21:31.078874'
 llm_config:
   extract_user_profile_prompt: questionsanswers/extract_user_profile_prompt:production
   job_summary_prompt: questionsanswers/job_summary_prompt:production
