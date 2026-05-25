@@ -11,7 +11,7 @@ import pandas as pd
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from dashboard.app import TABLE_STYLE
+from dashboard.styles import TABLE_STYLE
 from dashboard.components.utils import rgb_to_rgba
 from src.setup import DATA_DIR, config
 import plotly.io as pio

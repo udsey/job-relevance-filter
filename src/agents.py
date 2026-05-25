@@ -9,22 +9,29 @@ from langchain_ollama import ChatOllama
 from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseChatModel
+from langsmith import Client
 
 import logging
 
 import pdfplumber
 from tqdm import tqdm
 from src.models import (LLMJobMatchModel, LLMJobSummaryModel,
+                        LLMSuggestFillModel,
                         LLMUserProfileModel, LinkedinJobModel)
 from src.setup import CONFIG_DIR, config
+from src.memory import memory_store
 from dotenv import load_dotenv
 
 from src.utils import save_to_yaml
+from functools import partial
 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+client = Client()
 
+pull_prompt = partial(client.pull_prompt,
+                      dangerously_pull_public_prompt=True)
 
 def get_llm() -> BaseChatModel:
     """Get llm with params."""
@@ -59,21 +66,13 @@ def get_llm() -> BaseChatModel:
 
 llm = get_llm()
 
-match_job_prompt = ChatPromptTemplate.from_messages([
-    ("system", config.llm_config.match_job_prompt),
-    ("human", "{job}"),
-    ("human", "{user_profile}")
-    ])
 
-job_summary_prompt = ChatPromptTemplate.from_messages([
-    ("system", config.llm_config.job_summary_prompt),
-    ("human", "{job}")
-    ])
+match_job_prompt = pull_prompt(config.llm_config.match_job_prompt)
+job_summary_prompt = pull_prompt(config.llm_config.job_summary_prompt)
+extract_user_profile_prompt = pull_prompt(
+    config.llm_config.extract_user_profile_prompt)
+suggest_fill_prompt = pull_prompt(config.llm_config.suggest_fill_prompt)
 
-extract_user_profile_prompt = ChatPromptTemplate.from_messages([
-    ("system", config.llm_config.extract_user_profile_prompt),
-    ("human", "{content}")
-    ])
 
 job_matcher_agent = (
     match_job_prompt | llm.with_structured_output(LLMJobMatchModel))
@@ -85,6 +84,10 @@ user_profile_extraction_agent = (
 job_summary_extraction_agent = (
     job_summary_prompt |
     llm.with_structured_output(LLMJobSummaryModel))
+
+suggest_fill_agent = (
+    suggest_fill_prompt |
+    llm.with_structured_output(LLMSuggestFillModel))
 
 
 def match_job(job: LinkedinJobModel,
@@ -156,4 +159,17 @@ def create_user_profile(
     user_profile = extract_user_profile(data)
     filepath = os.path.join(CONFIG_DIR, "profile.yaml")
     save_to_yaml(user_profile, filepath)
+
+    memory_store.clear_profile()
+    memory_store.seed_from_profile(user_profile)
+
     return user_profile
+
+
+def suggest_fill(query: str) -> LLMSuggestFillModel:
+    context = memory_store.search(query)
+    result = suggest_fill_agent.invoke({
+        "query": query,
+        "context": context
+        })
+    return result

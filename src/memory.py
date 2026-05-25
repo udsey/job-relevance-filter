@@ -17,17 +17,18 @@ logger = logging.getLogger(__name__)
 
 class MemoryStore():
     """FAISS memory store class."""
-    _EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
     def __init__(self) -> None:
+        self.dedup_threshold = config.memory_config.dedup_threshold
+        self.top_k = config.memory_config.top_k
+        self.min_score = config.memory_config.min_score
+        self.embedding_model = config.memory_config.embedding_model
+
         self.embedder = self._get_embedder()
-        self.dedup_threshold = config.dedup_threshold
-        self.top_k = 5
-        self.min_score = 0.3
 
     def _get_embedder(self) -> None:
         """Load embedder."""
-        return SentenceTransformer(self._EMBEDDING_MODEL_NAME)
+        return SentenceTransformer(self.embedding_model)
 
     def _embed(self, text: str) -> np.ndarray:
         """Return a normalised float32 embedding vector."""
@@ -58,6 +59,57 @@ class MemoryStore():
         with open(META_PATH, "wb") as f:
             pickle.dump(metadata, f)
         logger.debug(f"Memory index persisted ({len(metadata)} entries)")
+
+    def wipe(self) -> None:
+        """Wipe the entire index and metadata."""
+        if os.path.exists(INDEX_PATH):
+            os.remove(INDEX_PATH)
+        if os.path.exists(META_PATH):
+            os.remove(META_PATH)
+        logger.info("Memory index wiped")
+
+    def delete_source(self, source: str) -> None:
+        """Soft delete all entries in a source."""
+        index, metadata = self._load()
+
+        cleared = 0
+        for entry in metadata:
+            if entry.source == source:
+                entry.is_deleted = True
+                cleared += 1
+        self._save(index, metadata)
+        logger.info(f"Deleted {cleared} {source} entries")
+
+    def delete_category(self, category: str) -> None:
+        """Soft delete all entries in a category."""
+        index, metadata = self._load()
+
+        cleared = 0
+        for entry in metadata:
+            if entry.category == category:
+                entry.is_deleted = True
+                cleared += 1
+        self._save(index, metadata)
+        logger.info(f"Deleted {cleared} {category} entries")
+
+    def delete_entry(self, id: str) -> None:
+        """Soft delete a single entry by id."""
+        index, metadata = self._load()
+        is_found = False
+
+        for entry in metadata:
+            if entry.id == id:
+                entry.is_deleted = True
+                is_found = True
+                break
+        if is_found:
+            self._save(index, metadata)
+            logger.info(f"Deleted entry {id}")
+        else:
+            logger.info(f"{id} not found in DB")
+
+    def clear_profile(self) -> None:
+        self.delete_source("profile")
 
     def add_entry(self, entry: AddEntryModel) -> Optional[MemoryEntryModel]:
         """Add entry."""
@@ -100,7 +152,7 @@ class MemoryStore():
         results: list[MemoryEntryModel] = []
 
         for score, idx in zip(scores[0], indices[0]):
-            if idx == -1:
+            if idx == -1 or metadata[idx].is_deleted:
                 continue
 
             if float(score) < self.min_score:
@@ -125,36 +177,44 @@ class MemoryStore():
         if profile.summary:
             if self.add_entry(
                 AddEntryModel(
+                    source="profile",
                     category="experience",
                     content=profile.summary)):
                 inserted += 1
 
         for skill in profile.technical_skills or []:
             if self.add_entry(
-                AddEntryModel(category="skills", content=skill)):
+                AddEntryModel(source="profile",
+                              category="skills",
+                              content=skill)):
                 inserted += 1
 
         if profile.current_title:
             if self.add_entry(
                 AddEntryModel(
+                    source="profile",
                     category="experience",
                     content=f"Current title: {profile.current_title}")):
                 inserted += 1
 
         for title in profile.title_history or []:
             if self.add_entry(
-                AddEntryModel(category="experience",
+                AddEntryModel(source="profile",
+                              category="experience",
                               content=f"Previous title: {title}")):
                 inserted += 1
 
         for cert in profile.certifications or []:
             if self.add_entry(
-                AddEntryModel(category="certifications", content=cert)):
+                AddEntryModel(source="profile",
+                              category="certifications",
+                              content=cert)):
                 inserted += 1
 
         if profile.years_of_experience is not None:
             if self.add_entry(
                 AddEntryModel(
+                    source="profile",
                     category="experience",
                     content=(
                         f"{profile.years_of_experience} years "
@@ -164,5 +224,4 @@ class MemoryStore():
         logger.info(f"seed_from_profile: inserted {inserted} entries")
 
 
-
-
+memory_store = MemoryStore()

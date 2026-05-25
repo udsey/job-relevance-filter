@@ -31,6 +31,9 @@ logging.basicConfig(
 )
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("WDM").setLevel(logging.WARNING)
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+logging.getLogger("faiss").setLevel(logging.WARNING)
+logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
 
 CONFIG_DIR = os.getcwd()
 DATA_DIR = os.path.join(CONFIG_DIR, 'data')

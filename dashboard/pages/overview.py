@@ -12,7 +12,7 @@ import plotly.express as px
 from src.scheduler import scheduler
 from apscheduler.triggers.date import DateTrigger
 from src.run import run
-from dashboard.app import TABLE_STYLE
+from dashboard.styles import TABLE_STYLE
 from src.setup import CONFIG_DIR, DATA_DIR, config, load_config
 from src.utils import load_existing_criteria, load_existing_profile
 from dashboard.components.kpi import kpi_card
