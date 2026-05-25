@@ -16,4 +16,4 @@ memory_config:
   min_score: 0.3
   top_k: 5
 no_response_days: 14
-relevance_threshold: 0.65
+relevance_threshold: 0.8
