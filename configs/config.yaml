@@ -1,6 +1,6 @@
 cron: 0 0 * * *
 last_run: 2026-05-25 16:12:07.936685
-last_sync: 2026-05-24 18:56:06.459105
+last_sync: '2026-05-25 17:02:32.978701'
 llm_config:
   extract_user_profile_prompt: questionsanswers/extract_user_profile_prompt:production
   job_summary_prompt: questionsanswers/job_summary_prompt:production
@@ -9,7 +9,7 @@ llm_config:
   model_type: deepseek
   suggest_fill_prompt: questionsanswers/suggest_fill_prompt:production
   temperature: 0.2
-max_results: 25
+max_results: 50
 memory_config:
   dedup_threshold: 0.95
   embedding_model: all-MiniLM-L6-v2

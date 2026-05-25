@@ -304,15 +304,15 @@ class MemoryEntryModel(BaseModel):
     content: str
     created_at: str
     score: Optional[float] = 0.0
-    source: str = "manual"
-    is_deleted: bool = False
+    source: Optional[str] = "manual"
+    is_deleted: Optional[bool] = False
 
 
 class AddEntryModel(BaseModel):
     """FAISS Add Entry."""
     category: str
     content: str
-    source: str = "manual"
+    source: Optional[str] = "manual"
 
 
 class APIResponseModel(BaseModel):

@@ -39,6 +39,7 @@ app.layout = dbc.Container([
             dbc.NavItem(dbc.NavLink("Job Tracker", href="/jobs-tracker")),
             dbc.NavItem(dbc.NavLink("Match Job", href="/match-job")),
             dbc.NavItem(dbc.NavLink("Criteria & Profile", href="/profile")),
+            dbc.NavItem(dbc.NavLink("Memory", href="/memory"))
         ],
         className="mb-4"
     ),

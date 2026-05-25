@@ -26,6 +26,11 @@ class MemoryStore():
 
         self.embedder = self._get_embedder()
 
+    @property
+    def is_empty(self) -> bool:
+        _, metadata = self._load()
+        return not any(not e.is_deleted for e in metadata)
+
     def _get_embedder(self) -> None:
         """Load embedder."""
         return SentenceTransformer(self.embedding_model)
@@ -108,8 +113,33 @@ class MemoryStore():
         else:
             logger.info(f"{id} not found in DB")
 
+    def restore_entry(self, id: str) -> None:
+        """Restore soft deleted entry by id."""
+        index, metadata = self._load()
+        is_found, is_updated = False, False
+
+        for entry in metadata:
+            if entry.id == id:
+                if entry.is_deleted:
+                    entry.is_deleted = False
+                    is_updated = True
+                is_found = True
+                break
+        if is_updated:
+            self._save(index, metadata)
+            logger.info(f"{id} is restored")
+        elif is_found:
+            logger.info(f"Entry {id} is already active")
+        else:
+            logger.info(f"{id} not found in DB")
+
     def clear_profile(self) -> None:
         self.delete_source("profile")
+
+    def get_metadata(self) -> Optional[list[MemoryEntryModel]]:
+        """Return Metadata."""
+        _, metadata = self._load()
+        return metadata
 
     def add_entry(self, entry: AddEntryModel) -> Optional[MemoryEntryModel]:
         """Add entry."""
@@ -126,7 +156,8 @@ class MemoryStore():
             id=str(uuid.uuid1()),
             category=entry.category,
             content=entry.content,
-            created_at=datetime.now().isoformat()
+            created_at=datetime.now().isoformat(),
+            source=entry.source
         )
 
         index.add(vector)
@@ -178,7 +209,7 @@ class MemoryStore():
             if self.add_entry(
                 AddEntryModel(
                     source="profile",
-                    category="experience",
+                    category="summary",
                     content=profile.summary)):
                 inserted += 1
 
@@ -215,7 +246,7 @@ class MemoryStore():
             if self.add_entry(
                 AddEntryModel(
                     source="profile",
-                    category="experience",
+                    category="summary",
                     content=(
                         f"{profile.years_of_experience} years "
                         "of professional experience"))):
